@@ -1,0 +1,5 @@
+name: housing_initiative_submarket
+channels:
+  - conda-forge
+dependencies:
+  - python = 3.9*
