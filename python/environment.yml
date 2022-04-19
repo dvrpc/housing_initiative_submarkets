@@ -1,4 +1,4 @@
-name: housing_initiative_submarket
+name: housing_submarket
 channels:
   - conda-forge
 dependencies:
