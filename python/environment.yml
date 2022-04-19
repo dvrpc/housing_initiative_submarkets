@@ -1,5 +1,6 @@
 name: housing_submarket
 channels:
   - conda-forge
+  - pandas
 dependencies:
   - python = 3.9*
