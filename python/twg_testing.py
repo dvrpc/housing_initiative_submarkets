@@ -13,3 +13,5 @@ list(properties)
 
 deeds = pd.read_csv(r"G:\Shared drives\FY22 Regional Housing Initiative\Data\TWG Sample Data\Montgomery County\DVRPCTransactions.txt", sep="\t", index_col='TRANID')
 list(deeds)
+
+print(deeds['PROPUSE'].unique())
