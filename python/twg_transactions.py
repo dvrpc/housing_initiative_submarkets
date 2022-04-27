@@ -21,9 +21,6 @@ print("Of the {} records, {} of them have no FIPS, or {} percent.".format(total_
 mortgages = len(transactions.loc[transactions['DEEDTYPE'].notnull()])
 print(mortgages)
 
-transactions = transactions[['TRANID', 'FIPS', 'PRICE', 'DATE', 'DEEDTYPE', 'SALETYPE', 'NOMINAL', 'MORTGAGE', 'VALIDSALE', 'ForeclosureFlag']]
-print(transactions.head(10))
-
 # Nominal transactions
 nominal = len(transactions.loc[transactions['NOMINAL'].notnull()])
 print(nominal)
@@ -33,6 +30,19 @@ print(nominal_vals)
 
 deed_type_vals = transactions['DEEDTYPE'].unique()
 print(deed_type_vals)
+
+print(list(transactions))
+
+transactions = transactions[['TRANID', 'FIPS', 'PRICE', 'DATE', 'DEEDTYPE', 'SALETYPE', 'NOMINAL', 'VALIDSALE', 'MORTGAGE', 'PROPUSE', 'MTGTYPE', 'ForeclosureFlag']]
+print(transactions.head(10))
+
+# DOC_TYPE
+
+deed_transactions = transactions.loc[transactions['DEEDTYPE'] == 27]
+print(len(deed_transactions))
+
+cash_sale_deed = transactions.loc[transactions['DEEDTYPE'] == 15]
+print(len(cash_sale_deed))
 
 """
 # Summary stats
