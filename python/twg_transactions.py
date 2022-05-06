@@ -12,6 +12,16 @@ print("In this sample dataset, there are {} rows".format(total_rows))
 vacant_props = len(transactions.loc[transactions['PROPCLASS'] == 'V'])
 print("In this sample dataset, {} of the possible {} total rows are vacant, which is {} percent.".format(vacant_props, total_rows, round((vacant_props/total_rows) * 100, 1)))
 
+# SALETYPE
+print(len(transactions['SALETYPE'].notnull()))
+
+transactions = transactions[['FIPS', 'SALETYPE']]
+grouped = transactions.groupby('SALETYPE').count()
+print(grouped)
+
+print(transactions['SALETYPE'].unique())
+
+"""
 # No tract
 no_tract = len(transactions.loc[transactions['FIPS'].isnull()])
 print("Of the {} records, {} of them have no FIPS, or {} percent.".format(total_rows, no_tract, round((no_tract/total_rows) * 100, 1)))
@@ -43,6 +53,7 @@ print(len(deed_transactions))
 
 cash_sale_deed = transactions.loc[transactions['DEEDTYPE'] == 15]
 print(len(cash_sale_deed))
+"""
 
 """
 # Summary stats
