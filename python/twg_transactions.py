@@ -4,11 +4,14 @@
 import pandas as pd
 
 # Transactions
-transactions = pd.read_csv(r"G:\Shared drives\FY22 Regional Housing Initiative\Data\TWG Sample Data\Montgomery County\DVRPCTransactions.txt", dtype = {'DEEDTYPE': str, 'SALETYPE': str, 'PROPUSE': str, 'MTGTYPE': str}, sep="\t")
+transactions = pd.read_csv(
+    r"G:\Shared drives\FY22 Regional Housing Initiative\Data\TWG Sample Data\Montgomery County\DVRPCTransactions.txt",
+    dtype={"DEEDTYPE": str, "SALETYPE": str, "PROPUSE": str, "MTGTYPE": str},
+    sep="\t",
+)
 
 
-
-transactions_test = transactions[['DEEDTYPE', 'SALETYPE', 'PROPUSE', 'MTGTYPE']]
+transactions_test = transactions[["DEEDTYPE", "SALETYPE", "PROPUSE", "MTGTYPE"]]
 print(transactions_test)
 
 # Calculate total number of rows
@@ -17,9 +20,9 @@ print("In the transactions dataset, there are {} rows".format(transactions_total
 
 
 # Testing a quick groupby
-transactions_condensed = transactions[['SALETYPE', 'TRANID']]
-transactions_condensed['count'] = 0
-results = transactions_condensed.groupby('SALETYPE', 'TRANID').count()
+transactions_condensed = transactions[["SALETYPE", "TRANID"]]
+transactions_condensed["count"] = 0
+results = transactions_condensed.groupby("SALETYPE", "TRANID").count()
 print(results)
 
 """

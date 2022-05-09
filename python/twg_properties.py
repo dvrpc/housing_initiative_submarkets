@@ -4,21 +4,33 @@
 import pandas as pd
 
 # Properties
-properties = pd.read_csv(r"G:\Shared drives\FY22 Regional Housing Initiative\Data\TWG Sample Data\Montgomery County\DVRPCProperties.txt", sep="\t", index_col='PROPID')
+properties = pd.read_csv(
+    r"G:\Shared drives\FY22 Regional Housing Initiative\Data\TWG Sample Data\Montgomery County\DVRPCProperties.txt",
+    sep="\t",
+    index_col="PROPID",
+)
 total_rows = len(properties)
 
 
 print("In this sample dataset, there are {} rows".format(total_rows))
-vacant_props = len(properties.loc[properties['PROPCLASS'] == 'V'])
-print("In this sample dataset, {} of the possible {} total rows are vacant, which is {} percent.".format(vacant_props, total_rows, round((vacant_props/total_rows) * 100, 1)))
+vacant_props = len(properties.loc[properties["PROPCLASS"] == "V"])
+print(
+    "In this sample dataset, {} of the possible {} total rows are vacant, which is {} percent.".format(
+        vacant_props, total_rows, round((vacant_props / total_rows) * 100, 1)
+    )
+)
 
 # No tract
-no_tract = len(properties.loc[properties['FIPS'].isnull()])
-print("Of the {} records, {} of them have no FIPS, or {} percent.".format(total_rows, no_tract, round((no_tract/total_rows) * 100, 1)))
+no_tract = len(properties.loc[properties["FIPS"].isnull()])
+print(
+    "Of the {} records, {} of them have no FIPS, or {} percent.".format(
+        total_rows, no_tract, round((no_tract / total_rows) * 100, 1)
+    )
+)
 
 # PROPCLASS
-propclass = properties[['FIPS', 'PROPCLASS']]
-properties['prop_total'] = propclass.groupby('PROPCLASS').count()
+propclass = properties[["FIPS", "PROPCLASS"]]
+properties["prop_total"] = propclass.groupby("PROPCLASS").count()
 properties
 
 """"
