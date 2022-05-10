@@ -2,31 +2,84 @@
 # Purpose: This script evaluates sample transactions dataset from The Warren Group.
 
 import pandas as pd
+import openpyxl
 
 # Transactions
 transactions = pd.read_csv(
     r"G:\Shared drives\FY22 Regional Housing Initiative\Data\TWG Sample Data\Montgomery County\DVRPCTransactions.txt",
     dtype={"DEEDTYPE": str, "SALETYPE": str, "PROPUSE": str, "MTGTYPE": str},
     sep="\t",
+    low_memory=False,
 )
+list(transactions)
 
-
-transactions_test = transactions[["DEEDTYPE", "SALETYPE", "PROPUSE", "MTGTYPE"]]
-print(transactions_test)
 
 # Calculate total number of rows
 transactions_total_rows = len(transactions)
 print("In the transactions dataset, there are {} rows".format(transactions_total_rows))
 
 
+# Lookup Tables ---
+
+
+# DOC_TYPE Lookup
+doc_type_lookup = pd.read_excel(
+    r"G:\Shared drives\FY22 Regional Housing Initiative\Data\TWG Sample Data\TWG_Data Dictionary_All Record Layouts.xlsx",
+    sheet_name="DOC_TYPE",
+    dtype={"CODE": str},
+    index_col="CODE",
+)
+print(doc_type_lookup)
+
+
+# USAGE Lookup
+usage_lookup = pd.read_excel(
+    r"G:\Shared drives\FY22 Regional Housing Initiative\Data\TWG Sample Data\TWG_Data Dictionary_All Record Layouts.xlsx",
+    sheet_name="USAGE",
+    dtype={"code": str},
+    index_col="code",
+)
+print(usage_lookup)
+
+
+# SALETYPE Lookup
+sale_type_lookup = pd.read_excel(
+    r"G:\Shared drives\FY22 Regional Housing Initiative\Data\TWG Sample Data\TWG_Data Dictionary_All Record Layouts.xlsx",
+    sheet_name="SALETYPE",
+    dtype={"code": str},
+    index_col="code",
+)
+print(sale_type_lookup)
+
+
+# TRAN_TYPE Lookup
+tran_type_lookup = pd.read_excel(
+    r"G:\Shared drives\FY22 Regional Housing Initiative\Data\TWG Sample Data\TWG_Data Dictionary_All Record Layouts.xlsx",
+    sheet_name="TRAN_TYPE",
+    dtype={"TransType": str},
+    index_col="TransType",
+)
+print(tran_type_lookup)
+
+
+"""
 # Testing a quick groupby
 transactions_condensed = transactions[["SALETYPE", "TRANID"]]
+print(transactions_condensed)
 transactions_condensed["count"] = 0
 results = transactions_condensed.groupby("SALETYPE", "TRANID").count()
 print(results)
-
 """
 
+# DEEDTYPE
+use_type = transactions[["DEEDTYPE"]]
+use_type["count"] = ""
+use_type_grouped = use_type.groupby("DEEDTYPE").count()
+print(use_type_grouped)
+
+print(len(use_type.loc[use_type["DEEDTYPE"].isnull()]))
+
+"""
 # Distressed Sales
 distressed_sale = transactions.loc[transactions['distressed_sale'] == 't']
 distressed_sale_rows = len(distressed_sale)

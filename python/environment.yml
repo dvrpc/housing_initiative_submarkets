@@ -5,6 +5,7 @@ channels:
 packages:
   - pandas
   - pip:
-    -black
+    - black
+    - openpyxl
 dependencies:
   - python = 3.9*
