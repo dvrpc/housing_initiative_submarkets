@@ -1,0 +1,32 @@
+{
+    "id": "9C41A2E4",
+    "path": null,
+    "project_path": null,
+    "type": "r_dataframe",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1645023312158.0,
+    "source_on_save": false,
+    "relative_order": 3,
+    "properties": {
+        "expression": "acs2019vars",
+        "caption": "acs2019vars",
+        "totalObservations": 27040,
+        "displayedObservations": 27040,
+        "variables": 3,
+        "cacheKey": "1C79A522",
+        "object": "acs2019vars",
+        "environment": "",
+        "contentUrl": "grid_resource/gridviewer.html?env=&obj=acs2019vars&cache_key=1C79A522&max_cols=50",
+        "preview": 0
+    },
+    "folds": "",
+    "lastKnownWriteTime": 8461211967119127137,
+    "encoding": "",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1645023312158,
+    "read_only": false,
+    "read_only_alternatives": []
+}
