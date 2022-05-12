@@ -1,0 +1,25 @@
+{
+    "id": "CA2F105E",
+    "path": "G:/Shared drives/FY22 Regional Housing Initiative/SubmarketAnalysis/SubmarketClustering/create_shapefile.R",
+    "project_path": "create_shapefile.R",
+    "type": "r_source",
+    "hash": "3430063956",
+    "contents": "",
+    "dirty": false,
+    "created": 1647971215422.0,
+    "source_on_save": false,
+    "relative_order": 4,
+    "properties": {
+        "tempName": "Untitled1",
+        "cursorPosition": "14,0",
+        "scrollLine": "0"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1647972067,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1647972067850,
+    "read_only": false,
+    "read_only_alternatives": []
+}

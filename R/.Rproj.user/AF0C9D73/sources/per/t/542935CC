@@ -1,0 +1,32 @@
+{
+    "id": "542935CC",
+    "path": null,
+    "project_path": null,
+    "type": "r_dataframe",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1645023110603.0,
+    "source_on_save": false,
+    "relative_order": 2,
+    "properties": {
+        "expression": "dvrpc_dataset",
+        "caption": "dvrpc_dataset",
+        "totalObservations": "1379",
+        "displayedObservations": "1379",
+        "variables": "250",
+        "cacheKey": "C41E2D33",
+        "object": "dvrpc_dataset",
+        "environment": "",
+        "contentUrl": "grid_resource/gridviewer.html?env=&obj=dvrpc_dataset&cache_key=C41E2D33&max_cols=50",
+        "preview": "0"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 19140491697389660,
+    "encoding": "",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1645023110603,
+    "read_only": false,
+    "read_only_alternatives": []
+}
