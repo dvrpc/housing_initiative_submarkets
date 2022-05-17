@@ -9,6 +9,7 @@ deeds = pd.read_csv(
     dtype={"fips": str, "apn": str, "document_type": str},
     low_memory=False,
 )
+print(list(deeds))
 
 
 # Calculate total number of rows
@@ -30,9 +31,13 @@ print(
 
 distressed_sale_loan_type = distressed_sale[["loan_type"]]
 distressed_sale_loan_type["count"] = ""
-distressed_sale_loan_type_grouped = distressed_sale_loan_type.groupby("loan_type").count()
+distressed_sale_loan_type_grouped = distressed_sale_loan_type.groupby(
+    "loan_type"
+).count()
 print(distressed_sale_loan_type_grouped)
-print(len(distressed_sale_loan_type.loc[distressed_sale_loan_type["loan_type"].isnull()]))
+print(
+    len(distressed_sale_loan_type.loc[distressed_sale_loan_type["loan_type"].isnull()])
+)
 # Note: Count does not match up. Count is much lower when grouping by loan_type than simply getting the count of distressed_sale transactions. It's possible that a lot of the loan_type values are null.
 # Note: Confirmed. The loan_type is null for 3529 records--nearly all of the distressed_sale subset of the deeds data.
 
@@ -96,3 +101,9 @@ loan_type_df["count"] = ""
 loan_type_df_grouped = loan_type_df.groupby("loan_type").count()
 print(loan_type_df_grouped)
 print(len(deeds.loc[deeds["loan_type"].isnull()]))
+
+# Document Type
+doc_type_df = deeds[["document_type"]]
+doc_type_df["count"] = ""
+doc_type_df_grouped = doc_type_df.groupby("document_type").count()
+print(doc_type_df_grouped)

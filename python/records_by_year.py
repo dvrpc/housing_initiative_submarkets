@@ -1,7 +1,6 @@
 # Author: Brian Carney
-# Purpose: This script evaluates a sample deeds dataset from Estated.
+# Purpose: This script checks the number of records by calendar year for the sample TWG and Estated datasets.
 
-from ast import parse
 import pandas as pd
 
 
