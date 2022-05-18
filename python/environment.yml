@@ -4,6 +4,9 @@ channels:
   - pip
 packages:
   - pandas
+  - seaborn
+  - conda-forge:
+    - matplotlib
   - pip:
     - black
     - openpyxl
