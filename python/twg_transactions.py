@@ -68,7 +68,6 @@ sale_type_lookup = pd.read_excel(
     dtype={"code": str},
     index_col="code",
 )
-print(sale_type_lookup)
 
 
 # TRAN_TYPE Lookup
@@ -78,14 +77,10 @@ tran_type_lookup = pd.read_excel(
     dtype={"TransType": str},
     index_col="TransType",
 )
-print(tran_type_lookup)
 
 
 # Join PROPUSE with LU_CODE
-prop_use_results = lu_code_lookup.merge(
-    results, how="inner", left_index=True, right_index=True
-)
-print(prop_use_results)
+prop_use_results = lu_code_lookup.merge(results, how="inner", left_index=True, right_index=True)
 
 prop_use_results.to_csv(r"C:\Users\bcarney\Desktop\test_data\prop_use_results.csv")
 # Note: Did this to see the property use for these records. Mostly (90-95 percent) residential. Nearly twice as many records as Estated.
@@ -94,9 +89,8 @@ prop_use_results.to_csv(r"C:\Users\bcarney\Desktop\test_data\prop_use_results.cs
 use_type = transactions[["DEEDTYPE"]]
 use_type["count"] = ""
 use_type_grouped = use_type.groupby("DEEDTYPE").count()
-print(use_type_grouped)
 
-print(len(use_type.loc[use_type["DEEDTYPE"].isnull()]))
+# print(len(use_type.loc[use_type["DEEDTYPE"].isnull()]))
 
 
 # Distressed Sales
@@ -113,8 +107,7 @@ print(
 
 # Real Estate Owned
 real_estate_owned = transactions.loc[
-    (transactions["real_estate_owned"] != "NO")
-    & (transactions["real_estate_owned"].notnull())
+    (transactions["real_estate_owned"] != "NO") & (transactions["real_estate_owned"].notnull())
 ]
 real_estate_owned_rows = len(real_estate_owned)
 print(
@@ -128,8 +121,7 @@ print(
 
 # Cash Sales
 cash_sales = transactions.loc[
-    (transactions["loan_type"] == "CASH")
-    | (transactions["document_type"] == "CASH SALE")
+    (transactions["loan_type"] == "CASH") | (transactions["document_type"] == "CASH SALE")
 ]
 cash_sales_rows = len(cash_sales)
 print(
