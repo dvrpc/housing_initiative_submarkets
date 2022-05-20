@@ -60,32 +60,25 @@ estated_2021_drop_outliers = estated_transactions_2021.loc[
 # print(estated_2021_drop_outliers["sale_price"].describe().apply(lambda x: format(x, "f")))
 
 
-# Import property dataset
-addresses = pd.read_csv(
-    r"G:\Shared drives\FY22 Regional Housing Initiative\Data\Estated Sample Data\Montgomery County\addresses.csv",
-    dtype={"apn": str, "census_tract": str, "fips": str},
-    index_col="apn",
-)
-addresses = addresses[["census_tract"]]
+# Import address dataset
+from estated_addresses import estated_addresses
+
+estated_addresses = estated_addresses[["tract_full"]]
 
 estated_residential_2021_properties = estated_2021_drop_outliers.merge(
-    addresses, how="inner", left_index=True, right_index=True
+    estated_addresses, how="inner", left_index=True, right_index=True
 )
 
 
-estated_2021_properties = estated_residential_2021_properties[["census_tract", "sale_price"]]
-estated_2021_properties_grouped = estated_residential_2021_properties.groupby(
-    "census_tract"
-).median()
+estated_2021_properties = estated_residential_2021_properties[["tract_full", "sale_price"]]
+estated_2021_properties_grouped = estated_residential_2021_properties.groupby("tract_full").median()
 
 estated_2021_properties_grouped.to_csv(
     r"C:\Users\bcarn\OneDrive\Desktop\test_results\estated_median_by_tract_2021.csv"
 )
 
 
-estated_2021_properties_counted = estated_residential_2021_properties.groupby(
-    "census_tract"
-).count()
+estated_2021_properties_counted = estated_residential_2021_properties.groupby("tract_full").count()
 estated_2021_properties_counted.to_csv(
     r"C:\Users\bcarn\OneDrive\Desktop\test_results\estated_count_by_tract_2021.csv"
 )
