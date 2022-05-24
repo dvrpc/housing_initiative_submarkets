@@ -31,16 +31,21 @@ twg_transactions["PROPID"] = twg_transactions["PROPID"].str.replace("TRAN", "PRO
 
 # Select 2021 transactions
 twg_transactions_2021 = twg_transactions.loc[
-    (twg_transactions["DATE"] >= "2021-01-01") & (twg_transactions["DATE"] <= "2021-12-31")
+    (twg_transactions["DATE"] >= "2021-01-01")
+    & (twg_transactions["DATE"] <= "2021-12-31")
 ]
 
 
 # Select only DEEDTYPE = "27" (Deed)
-transactions_deeds_only_2021 = twg_transactions_2021.loc[twg_transactions_2021["DEEDTYPE"] == "27"]
+transactions_deeds_only_2021 = twg_transactions_2021.loc[
+    twg_transactions_2021["DEEDTYPE"] == "27"
+]
 
 # Select particular PROPUSE
 twg_residential_propuse_2021 = transactions_deeds_only_2021.loc[
-    transactions_deeds_only_2021["PROPUSE"].isin(["1001", "8001", "1004", "1002", "1101"])
+    transactions_deeds_only_2021["PROPUSE"].isin(
+        ["1001", "8001", "1004", "1002", "1101"]
+    )
 ]
 
 
@@ -63,7 +68,8 @@ twg_residential_2021_properties = twg_residential_propuse_2021.merge(
 
 # Add TRACT_FULL (11 characters) field
 twg_residential_2021_properties["TRACT_FULL"] = (
-    twg_residential_2021_properties["FIPS"] + twg_residential_2021_properties["CNSSTRACT"]
+    twg_residential_2021_properties["FIPS"]
+    + twg_residential_2021_properties["CNSSTRACT"]
 )
 twg_residential_2021_properties = twg_residential_2021_properties[
     ["TRACT_FULL", "MORTGAGE", "PRICE"]
@@ -92,5 +98,11 @@ twg_residential_2021_properties_counted.to_csv(
 )
 
 
-print(twg_residential_2021_properties["MORTGAGE"].describe().apply(lambda x: format(x, "f")))
-print(twg_residential_2021_properties["PRICE"].describe().apply(lambda x: format(x, "f")))
+print(
+    twg_residential_2021_properties["MORTGAGE"]
+    .describe()
+    .apply(lambda x: format(x, "f"))
+)
+print(
+    twg_residential_2021_properties["PRICE"].describe().apply(lambda x: format(x, "f"))
+)
