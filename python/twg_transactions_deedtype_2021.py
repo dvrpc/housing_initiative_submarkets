@@ -72,7 +72,7 @@ twg_residential_2021_properties["TRACT_FULL"] = (
     + twg_residential_2021_properties["CNSSTRACT"]
 )
 twg_residential_2021_properties = twg_residential_2021_properties[
-    ["TRACT_FULL", "MORTGAGE", "PRICE"]
+    ["TRACT_FULL", "MORTGAGE", "PRICE", "NOMINAL", "VALIDSALE"]
 ]
 
 # MEDIAN
@@ -81,23 +81,27 @@ twg_residential_2021_properties_grouped = twg_residential_2021_properties.groupb
 ).median()
 
 
+"""
 # Export to csv
 twg_residential_2021_properties_grouped.to_csv(
-    r"C:\Users\bcarn\OneDrive\Desktop\test_results_0519\twg_deeds_by_tract_median_2021.csv"
+    "C:\\Users\\bcarn\\OneDrive\\Desktop\\test_results_0519\\twg_deeds_by_tract_median_2021.csv"
 )
+
+"""
 
 # COUNT
 twg_residential_2021_properties_counted = twg_residential_2021_properties.groupby(
     "TRACT_FULL"
 ).count()
 
-
+"""
 # Export to csv
 twg_residential_2021_properties_counted.to_csv(
-    r"C:\Users\bcarn\OneDrive\Desktop\test_results_0519\twg_deeds_by_tract_count_2021.csv"
+    "C:\\Users\\bcarn\\OneDrive\\Desktop\\test_results_0519\\twg_deeds_by_tract_count_2021.csv"
 )
+"""
 
-
+"""
 print(
     twg_residential_2021_properties["MORTGAGE"]
     .describe()
@@ -105,4 +109,42 @@ print(
 )
 print(
     twg_residential_2021_properties["PRICE"].describe().apply(lambda x: format(x, "f"))
+)
+"""
+"""
+# See if there are "MORTGAGE" values when DEEDTYPE = 27 (Deed)
+twg_mortgage_check_2021 = twg_residential_2021_properties.loc[
+    (twg_residential_2021_properties["PRICE"] != 0.0)
+    & (twg_residential_2021_properties["PRICE"].notnull())
+]
+print(twg_mortgage_check_2021)
+
+# See if there are "MORTGAGE" values when DEEDTYPE = 27 (Deed)
+twg_mortgage_check_oppo_2021 = twg_residential_2021_properties.loc[
+    (twg_residential_2021_properties["PRICE"] == 0.0)
+    | (twg_residential_2021_properties["PRICE"].isnull())
+]
+print(twg_mortgage_check_oppo_2021)
+
+print(
+    twg_residential_2021_properties.loc[
+        (twg_residential_2021_properties["NOMINAL"].notnull())
+        | (twg_residential_2021_properties["VALIDSALE"].notnull())
+    ]
+)
+"""
+
+twg_transactions_2021_propuse = twg_transactions_2021.loc[
+    twg_transactions_2021["PROPUSE"].isin(["1001", "8001", "1004", "1002", "1101"])
+]
+
+twg_transactions_2021_propuse = twg_transactions_2021_propuse[
+    ["MORTGAGE", "PRICE", "NOMINAL", "VALIDSALE"]
+]
+
+print(
+    twg_transactions_2021.loc[
+        (twg_transactions_2021["NOMINAL"].notnull())
+        | (twg_transactions_2021["VALIDSALE"].notnull())
+    ]
 )
