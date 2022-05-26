@@ -7,7 +7,7 @@ import openpyxl
 
 # Transactions
 twg_transactions = pd.read_csv(
-    r"G:\Shared drives\FY22 Regional Housing Initiative\Data\TWG Sample Data\Montgomery County\DVRPCTransactions.txt",
+    "G:\\Shared drives\\FY22 Regional Housing Initiative\\Data\\TWG Sample Data\Montgomery County\\DVRPCTransactions.txt",
     dtype={
         "SOURCE": str,
         "DEEDTYPE": str,
@@ -51,7 +51,7 @@ twg_residential_propuse_2021 = transactions_deeds_only_2021.loc[
 
 # Import property dataset
 properties = pd.read_csv(
-    r"G:\Shared drives\FY22 Regional Housing Initiative\Data\TWG Sample Data\Montgomery County\DVRPCProperties.txt",
+    "G:\\Shared drives\\FY22 Regional Housing Initiative\\Data\\TWG Sample Data\Montgomery County\\DVRPCProperties.txt",
     dtype={"PROPID": str, "CNSSTRACT": str, "FIPS": str},
     sep="\t",
     index_col="PROPID",
