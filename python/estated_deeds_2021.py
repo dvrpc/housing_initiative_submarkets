@@ -70,16 +70,13 @@ estated_residential_2021_properties = estated_2021_drop_outliers.merge(
 )
 
 
-estated_2021_properties = estated_residential_2021_properties[["tract_full", "sale_price"]]
-estated_2021_properties_grouped = estated_residential_2021_properties.groupby("tract_full").median()
-
-estated_2021_properties_grouped.to_csv(
-    r"C:\Users\bcarn\OneDrive\Desktop\test_results\estated_median_by_tract_2021.csv"
+estated_2021_properties = estated_residential_2021_properties[
+    ["tract_full", "sale_price"]
+]
+print(
+    len(
+        estated_2021_properties.loc[
+            ~estated_2021_properties["tract_full"].str.startswith("42091", na=False)
+        ]
+    )
 )
-
-
-estated_2021_properties_counted = estated_residential_2021_properties.groupby("tract_full").count()
-estated_2021_properties_counted.to_csv(
-    r"C:\Users\bcarn\OneDrive\Desktop\test_results\estated_count_by_tract_2021.csv"
-)
-# Census Tracts are a mess. Have to fix to get a proper groupby.
