@@ -19,7 +19,20 @@ acs2020 = pd.read_csv(
 index = acs2020.index.astype(str)
 
 
-acs2020 = acs2020.drop(["year", "POP_TOT", "HH_TOT", "UNIT_MIS"], axis=1)
+acs2020 = acs2020.drop(
+    [
+        "year",
+        "POP_TOT",
+        "HH_TOT",
+        "UNIT_MIS",
+        "HHI_U35",
+        "HHI_3575",
+        "HHI_75100",
+        "HHI_100P",
+        "THREE_BR",
+    ],
+    axis=1,
+)
 
 nan = np.nan
 imp = SimpleImputer(missing_values=np.nan, strategy="median")
@@ -32,7 +45,9 @@ acs2020_minmax = min_max_scaler.fit_transform(acs2020_imp)
 
 
 # Cluster
-kmedoids = KMedoids(n_clusters=8, init="build", method="pam").fit(acs2020_minmax)
+kmedoids = KMedoids(n_clusters=9, init="k-medoids++", method="pam", max_iter=10000).fit(
+    acs2020_minmax
+)
 
 
 # Convert back to df
@@ -45,12 +60,7 @@ df = pd.DataFrame(
         "TEN_RENT",
         "TEN_OWN",
         "VCY",
-        "HHI_U35",
-        "HHI_3575",
-        "HHI_75100",
-        "HHI_100P",
         "HHI_150P",
-        "THREE_BR",
         "YB_59E",
         "YB_6099",
         "YB_00L",
@@ -67,12 +77,12 @@ df = df.set_index(index)
 
 # Rename Clusters
 df["cluster"] = df["cluster"].replace(
-    [0, 1, 2, 3, 4, 5, 6, 7], [1, 2, 3, 4, 5, 6, 7, 8]
+    [0, 1, 2, 3, 4, 5, 6, 7, 8], [1, 2, 3, 4, 5, 6, 7, 8, 9]
 )
 print(df)
 
 df.to_csv(
-    "G:\\Shared drives\\FY22 Regional Housing Initiative\\SubmarketAnalysis\\test_submarket_clustering\data\\acs2020_clusters.csv"
+    "G:\\Shared drives\\FY22 Regional Housing Initiative\\SubmarketAnalysis\\test_submarket_clustering\\data\\acs2020_clusters.csv"
 )
 
 clusters_df = df[["cluster"]]
