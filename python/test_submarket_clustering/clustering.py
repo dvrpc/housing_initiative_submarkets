@@ -45,7 +45,7 @@ acs2020_minmax = min_max_scaler.fit_transform(acs2020_imp)
 
 
 # Cluster
-kmedoids = KMedoids(n_clusters=9, init="k-medoids++", method="pam", max_iter=10000).fit(
+kmedoids = KMedoids(n_clusters=8, init="k-medoids++", method="pam", max_iter=5000).fit(
     acs2020_minmax
 )
 
@@ -76,21 +76,14 @@ df = df.set_index(index)
 
 
 # Rename Clusters
-df["cluster"] = df["cluster"].replace(
-    [0, 1, 2, 3, 4, 5, 6, 7, 8], [1, 2, 3, 4, 5, 6, 7, 8, 9]
-)
+df["cluster"] = df["cluster"].replace([0, 1, 2, 3, 4, 5, 6, 7, 8], [1, 2, 3, 4, 5, 6, 7, 8, 9])
 print(df)
 
-df.to_csv(
-    "G:\\Shared drives\\FY22 Regional Housing Initiative\\SubmarketAnalysis\\test_submarket_clustering\\data\\acs2020_clusters.csv"
-)
 
 clusters_df = df[["cluster"]]
 
 # Join clusters back with original ACS data
-acs2020_clusters = clusters_df.merge(
-    acs2020, how="inner", left_index=True, right_index=True
-)
+acs2020_clusters = clusters_df.merge(acs2020, how="inner", left_index=True, right_index=True)
 acs2020_clusters.to_csv(
-    "U:\\FY2022\\Planning\\RegionalHousingInitiative\\data\\acs2020_clusters.csv"
+    "G:\\Shared drives\\FY22 Regional Housing Initiative\\Data\\kmedoid_test_1\\kmedoid_results_1.csv"
 )

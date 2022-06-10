@@ -7,10 +7,10 @@ packages:
   - seaborn
   - conda-forge:
     - matplotlib
-    - scikit-learn-extra
   - pip:
     - black
     - openpyxl
     - scikit-learn
+    - scikit-learn-extra
 dependencies:
   - python = 3.9*
