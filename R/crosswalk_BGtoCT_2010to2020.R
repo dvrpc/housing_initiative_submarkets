@@ -140,6 +140,8 @@ acs5_15_vars_tot <- c(
 dvrpc_states <- c(34, 42)
 dvrpc_fips <- c('34005|34007|34015|34021|42017|42029|42045|42091|42101')
 
+
+# Create a dataframe with the raw data for the region ----
 raw_data <- get_acs(geography = "block group",
                     variables = acs5_15_vars_tot,
                     year = 2015,
@@ -152,21 +154,46 @@ raw_data <- get_acs(geography = "block group",
   select(GEOID, year, ends_with("E"), -NAME)%>%
   `colnames<-`(str_replace(colnames(.),"E$",""))
 
-#Join Dataframes
-new_dataframe <- raw_data %>%
+#Join raw dataframe with crosswalk
+raw_data_crosswalk_dataframe <- raw_data %>%
   left_join(crosswalk, by = c("GEOID" = "bg2010ge_char"))
 
 
-dvrpc_dataset_15 <- new_dataframe %>%
-  mutate(POP_TOT = round(100*(POP_TOT * (wt_pop/100)), 1)) %>%
-  mutate(TEN_RENT = round(100*(TEN_R/TEN_TOT) * (wt_pop/100)),1) %>%
-  mutate(TEN_OWN = round(100*(TEN_O/TEN_TOT) * (wt_pop/100)),1) %>%
-  mutate(VCY = round(100*(UNITS_VAC/UNITS_TOT) * (wt_pop/100)), 1)%>%
-  select(GEOID, tr2020ge, POP_TOT, TEN_RENT, TEN_OWN, VCY) %>%
-  group_by(tr2020ge) %>%
+dvrpc_bg_grouped <- raw_data_crosswalk_dataframe %>%
+  mutate(POP_TOT = (POP_TOT * wt_pop), 3) %>%
+  mutate(TEN_RENT = round(100*(TEN_R/TEN_TOT) * wt_pop),3) %>%
+  mutate(TEN_OWN = round(100*(TEN_O/TEN_TOT) * wt_pop),3) %>%
+  mutate(VCY = round(100*(UNITS_VAC/UNITS_TOT) * wt_pop), 3)%>%
+  select(GEOID, bg2010ge, tr2020ge, POP_TOT, TEN_RENT, TEN_OWN, VCY) %>%
+  group_by(bg2010ge) %>%
   summarise(
+    tr2020ge = first(tr2020ge),
     POP_TOT = sum(POP_TOT),
     TEN_RENT = sum(TEN_RENT),
     TEN_OWN = sum(TEN_OWN),
-    VCY = sum(VCY)
+    VCY = sum(VCY),
+    .groups = "drop"
+  )
+dvrpc_bg_grouped$tr2020ge <- as.character(dvrpc_bg_grouped$tr2020ge)
+
+tract_pop_20 <- dvrpc_bg_grouped %>%
+  group_by(tr2020ge) %>%
+  summarise(
+    POP_TRACT = sum(POP_TOT),
+    .groups = "drop"
+  )
+tract_pop_20$tr2020ge <- as.character(tract_pop_20$tr2020ge)
+
+
+joined_dataset_with_tracts <- dvrpc_bg_grouped %>%
+  inner_join(tract_pop_20, by = "tr2020ge")
+
+final_dataset <- joined_dataset_with_tracts %>%
+  group_by(tr2020ge) %>%
+  summarise(
+    POP = sum(POP_TOT),
+    TEN_RENT = round(sum(POP_TOT/POP_TRACT * TEN_RENT), 1),
+    TEN_OWN = round(sum(POP_TOT/POP_TRACT * TEN_OWN), 1),
+    VCY = round(sum(POP_TOT/POP_TRACT * VCY), 1),
+    .groups = "drop"
   )
