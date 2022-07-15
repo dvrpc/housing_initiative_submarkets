@@ -1,9 +1,13 @@
+# Last updated: 07/15/2022
+# Purpose: This script uses a crosswalk from NHGIS to convert 2010 block groups to 2010 census tracts.
+
 # Load packages
 library(tidyverse)
 library(dplyr)
 library(rgdal)
 library(tidycensus)
 library(censusapi)
+library(stringr)
 
 #Load Census API key
 census_api_key("e6cd8f90ccb0acacdfa5373911a2e73b96dbd792", install=TRUE, overwrite=TRUE)
@@ -191,9 +195,9 @@ joined_dataset_with_tracts <- dvrpc_bg_grouped %>%
 final_dataset <- joined_dataset_with_tracts %>%
   group_by(tr2020ge) %>%
   summarise(
-    POP = sum(POP_TOT),
-    TEN_RENT = round(sum(POP_TOT/POP_TRACT * TEN_RENT), 1),
-    TEN_OWN = round(sum(POP_TOT/POP_TRACT * TEN_OWN), 1),
-    VCY = round(sum(POP_TOT/POP_TRACT * VCY), 1),
+    POP_15 = sum(POP_TOT),
+    TEN_RENT_15 = round(sum(POP_TOT/POP_TRACT * TEN_RENT), 1),
+    TEN_OWN_15 = round(sum(POP_TOT/POP_TRACT * TEN_OWN), 1),
+    VCY_15 = round(sum(POP_TOT/POP_TRACT * VCY), 1),
     .groups = "drop"
   )
