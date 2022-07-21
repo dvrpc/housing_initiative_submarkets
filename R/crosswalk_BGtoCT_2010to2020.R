@@ -158,24 +158,32 @@ raw_data <- get_acs(geography = "block group",
   select(GEOID, year, ends_with("E"), -NAME)%>%
   `colnames<-`(str_replace(colnames(.),"E$",""))
 
+# Check for missing values
+missing_pop <- raw_data %>%
+  filter(is.na(POP_TOT)) 
+
+missing_rent <- raw_data %>%
+  filter(is.na(RENT_MED)) %>%
+  select(GEOID, POP_TOT, RENT_MED)
+
+missing_inc <- raw_data %>%
+  filter(is.na(HHINC_MED))
+
 #Join raw dataframe with crosswalk
 raw_data_crosswalk_dataframe <- raw_data %>%
   left_join(crosswalk, by = c("GEOID" = "bg2010ge_char"))
 
 
 dvrpc_bg_grouped <- raw_data_crosswalk_dataframe %>%
-  mutate(POP_TOT = (POP_TOT * wt_pop), 3) %>%
-  mutate(TEN_RENT = round(100*(TEN_R/TEN_TOT) * wt_pop),3) %>%
-  mutate(TEN_OWN = round(100*(TEN_O/TEN_TOT) * wt_pop),3) %>%
-  mutate(VCY = round(100*(UNITS_VAC/UNITS_TOT) * wt_pop), 3)%>%
-  select(GEOID, bg2010ge, tr2020ge, POP_TOT, TEN_RENT, TEN_OWN, VCY) %>%
+  mutate(RENT_MED = (RENT_MED * wt_hh), 3) %>%
+  mutate(HHINC_MED = (HHINC_MED * wt_hh), 3) %>%
+  select(GEOID, bg2010ge, tr2020ge, POP_TOT, RENT_MED, HHINC_MED) %>%
   group_by(bg2010ge) %>%
   summarise(
     tr2020ge = first(tr2020ge),
     POP_TOT = sum(POP_TOT),
-    TEN_RENT = sum(TEN_RENT),
-    TEN_OWN = sum(TEN_OWN),
-    VCY = sum(VCY),
+    RENT_MED = sum(RENT_MED),
+    HHINC_MED = sum(HHINC_MED),
     .groups = "drop"
   )
 dvrpc_bg_grouped$tr2020ge <- as.character(dvrpc_bg_grouped$tr2020ge)
@@ -196,8 +204,7 @@ final_dataset <- joined_dataset_with_tracts %>%
   group_by(tr2020ge) %>%
   summarise(
     POP_15 = sum(POP_TOT),
-    TEN_RENT_15 = round(sum(POP_TOT/POP_TRACT * TEN_RENT), 1),
-    TEN_OWN_15 = round(sum(POP_TOT/POP_TRACT * TEN_OWN), 1),
-    VCY_15 = round(sum(POP_TOT/POP_TRACT * VCY), 1),
+    RENT_MED_15 = round(sum(POP_TOT/POP_TRACT * RENT_MED), 1),
+    HHINC_MED_15 = round(sum(POP_TOT/POP_TRACT * HHINC_MED), 1),
     .groups = "drop"
   )

@@ -187,11 +187,6 @@ raw_data <- get_acs(geography = "tract",
 dvrpc_dataset_20 <- raw_data%>%
   mutate(TEN_RENT = round(100*(TEN_R/TEN_TOT),1))%>%
   mutate(TEN_OWN = round(100*(TEN_O/TEN_TOT),1))%>%
-  mutate(HHI_U35 = round(100*((HHI_U10+HHI_1015 + HHI_1520 + HHI_2025 + HHI_2530 + HHI_3035)/HH_TOT),1))%>%
-  mutate(HHI_3575 = round(100*((HHI_3540 +HHI_4045 +HHI_4550 + HHI_5060 + HHI_6075)/HH_TOT),1))%>%
-  mutate(HHI_75100 = round(100*(HHI_75100/HH_TOT),1))%>%
-  mutate(HHI_100P = round(100*((HHI_100125 + HHI_125150 + HHI_150200 + HHI_200P)/HH_TOT),1))%>%
-  mutate(HHI_150P = round(100*((HHI_150200 + HHI_200P)/HH_TOT),1))%>%
   mutate(VCY = round(100*(UNITS_VAC/UNITS_TOT),1))%>%
   mutate(THREE_BR = round(100*((BED_OWN_3 + BED_OWN_4 + BED_OWN_5more + BED_RENT_3 + BED_RENT_4 + BED_RENT_5more)/UNITS_OCC), 1))%>%
   mutate(YB_59E = round(100*((YB_39E + YB_40to49 + YB_50to59)/UNITS_TOT), 1))%>%
@@ -200,7 +195,7 @@ dvrpc_dataset_20 <- raw_data%>%
   mutate(UNIT_1 = round(100*((UNIT_1DET + UNIT_1ATT)/UNITS_STR), 1))%>%
   mutate(UNIT_2to4 = round(100*((UNIT_2 + UNIT_3or4)/UNITS_STR), 1))%>%
   mutate(UNIT_5P = round(100*((UNIT_5to9 + UNIT_1019 + UNIT_2049 + UNIT_50P)/UNITS_STR), 1))%>%
-  mutate(UNIT_MIS = round(100*((UNIT_MOB + UNIT_OTH)/UNITS_STR), 1))%>%
-  select(GEOID, year, POP_TOT, HH_TOT, HHINC_MED, MED_HVAL, RENT_MED, TEN_RENT, TEN_OWN, VCY, HHI_U35, HHI_3575, HHI_75100, HHI_100P, HHI_150P, THREE_BR, YB_59E, YB_6099, YB_00L, UNIT_1, UNIT_2to4, UNIT_5P, UNIT_MIS)
+  mutate(BURDEN = round(100*((RPI_30to34 + RPI_35to39 + RPI_40to49 + RPI_50more + OPI_30to34 + OPI_35to39 + OPI_40to49 + OPI_50more)/(TEN_TOT)), 1))%>%
+  select(GEOID, year, POP_TOT, UNITS_TOT, HH_TOT, TEN_RENT, TEN_OWN, HHINC_MED, RENT_MED, VCY, YB_59E, YB_6099, YB_00L, UNIT_1, UNIT_2to4, UNIT_5P, BURDEN)
 
-write.csv(dvrpc_dataset_20, "G:\\Shared drives\\FY22 Regional Housing Initiative\\Data\\ACS5_2020\\acs5_2020_variables.csv", row.names = FALSE) 
+write.csv(dvrpc_dataset_20, "U:\\FY2022\\Planning\\RegionalHousingInitiative\\Year2_Research_Overlays\\data\\acs5_2020_variables.csv", row.names = FALSE) 
