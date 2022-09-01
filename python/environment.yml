@@ -12,5 +12,7 @@ packages:
     - openpyxl
     - scikit-learn
     - scikit-learn-extra
+    - sqlalchemy
+    - psycopg2-binary
 dependencies:
   - python = 3.9*
