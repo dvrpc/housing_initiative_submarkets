@@ -5,6 +5,8 @@ channels:
 packages:
   - pandas
   - seaborn
+  - psycopg2
+  - sqlalchemy
   - conda-forge:
     - matplotlib
   - pip:
@@ -12,7 +14,5 @@ packages:
     - openpyxl
     - scikit-learn
     - scikit-learn-extra
-    - sqlalchemy
-    - psycopg2-binary
 dependencies:
   - python = 3.9*
