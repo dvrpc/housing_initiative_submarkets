@@ -9,6 +9,8 @@ packages:
   - sqlalchemy
   - conda-forge:
     - matplotlib
+    - geopandas
+    - pyproj
   - pip:
     - black
     - openpyxl
