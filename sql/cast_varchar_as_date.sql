@@ -1,3 +1,3 @@
-CREATE VIEW "twg"."twg_deeds_2021_datefinal"
+CREATE VIEW "twg"."twg_leftjoin_deeds2021_properties20220715_datefinal"
 AS
-SELECT *, CAST("VARCHARDATE" AS DATE) AS "DATE_FINAL" FROM "twg"."twg_deeds_2021_datefixed";
+SELECT *, CAST("LASTSLVARCHAR" AS DATE) AS "LSTSLDATE_FINAL" FROM "twg"."twg_leftjoin_deeds2021_properties20220715";
