@@ -1,2 +1,2 @@
-CREATE TABLE "twg"."twg_deeds_2016" AS
-SELECT * FROM "twg_raw"."twg_deeds_2016";
+CREATE TABLE "twg"."twg_properties_20220722" AS
+SELECT * FROM "twg_raw"."twg_properties_20220722";
