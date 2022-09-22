@@ -1,1 +1,1 @@
-ALTER TABLE "twg"."twg_properties_20220715" ADD COLUMN geom geometry(Point, 4326);
+ALTER TABLE "nhpd"."102022_nhpd" ADD COLUMN geom geometry(Point, 4326);

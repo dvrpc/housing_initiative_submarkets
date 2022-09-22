@@ -1,1 +1,1 @@
-UPDATE "twg"."twg_properties_20220715" SET geom = ST_SetSRID(ST_MakePoint("LON", "LAT"), 4326);
+UPDATE "nhpd"."102022_nhpd" SET geom = ST_SetSRID(ST_MakePoint("Longitude", "Latitude"), 4326);
