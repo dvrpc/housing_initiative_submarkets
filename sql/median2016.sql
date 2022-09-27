@@ -25,7 +25,7 @@ union
 on
 	props."PROPID" = deeds."PROPID"
 where
-	"PRICE" > 0 AND "DEEDTYPE" IN ('14', '15', '27', '55') AND "PROPUSE" IN (1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009);
+	"PRICE" > 50000 AND "DEEDTYPE" IN ('14', '15', '27', '55') AND "PROPUSE" IN (1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009);
 --create spatial index on deeds
 drop index if exists idx_deeds_16;
 create index idx_deeds_16 on
