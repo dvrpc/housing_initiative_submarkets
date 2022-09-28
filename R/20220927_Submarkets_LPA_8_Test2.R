@@ -8,6 +8,8 @@ setwd("C:\\Users\\bcarney\\Documents\\GitHub\\housing_initiative_submarkets\\R")
 # install.packages("tidyLPA")
 # install.packages("magrittr")
 # install.packages("matrixStats")
+# install.packages("textshape")
+# install.packages("tidyr")
 
 
 # Import libraries
@@ -15,6 +17,8 @@ library(tidyLPA)
 library(dplyr)
 library(magrittr)
 library(matrixStats)
+library(textshape)
+library(tidyr)
 
 
 # Import data
@@ -29,11 +33,11 @@ joined_df <- merge(acs2020_raw, mediansaleprice_subsidizedhousing, by.x="GEOID",
   drop_na(med16, med21) %>%
   filter(HH_TOT > 0) %>%
   mutate(pct_subsidized = round((subsidizedunits/UNITS_TOT) * 100, 2)) %>%
-  column_to_rownames(., var = "GEOID")
+  column_to_rownames(., "GEOID")
 
 
-myVars <- c("HHINC_MED", "RENT_MED", "TEN_RENT", "TEN_OWN", "VCY", "HHI_150P", "YB_59E", "YB_6099", "YB_00L", "UNIT_1", "UNIT_2to4", "UNIT_5P", "pct_subsidized", "med21")
-myVars_Class <- c("HHINC_MED", "RENT_MED", "TEN_RENT", "TEN_OWN", "VCY", "HHI_150P", "YB_59E", "YB_6099", "YB_00L", "UNIT_1", "UNIT_2to4", "UNIT_5P", "pct_subsidized", "med21", "Class")
+myVars <- c("HHINC_MED", "RENT_MED", "TEN_RENT", "TEN_OWN", "VCY", "HHI_150P", "YB_59E", "YB_6099", "YB_00L", "UNIT_1", "UNIT_2to4", "UNIT_5P", "pct_subsidized", "med21", "pct_diff")
+myVars_Class <- c("HHINC_MED", "RENT_MED", "TEN_RENT", "TEN_OWN", "VCY", "HHI_150P", "YB_59E", "YB_6099", "YB_00L", "UNIT_1", "UNIT_2to4", "UNIT_5P", "pct_subsidized", "med21", "pct_diff", "Class")
 
 tracts <- row.names(joined_df_clean)
 
@@ -41,6 +45,11 @@ joined_df_clean <- joined_df %>%
   select(all_of(myVars)) %>%
   mutate_if(is.numeric, function(x) ifelse(is.na(x), median(x, na.rm = T), x))
 
+joined_df_clean_medians <- joined_df_clean %>%
+  apply(., 2, median)
+
+
+print(joined_df_clean_medians)
 
 # Export 1
 e1 <- joined_df_clean %>%
@@ -56,7 +65,7 @@ reduced_df <- export_1[myVars_Class]
 rownames(reduced_df) <- tracts
 
 # Write csv
-write.csv(reduced_df, "U:\\FY2022\\Planning\\RegionalHousingInitiative\\SubmarketAnalysis\\data\\LPA_Test2_Submarkets\\lpa_results_2_submarkets.csv")
+write.csv(reduced_df, "U:\\FY2022\\Planning\\RegionalHousingInitiative\\SubmarketAnalysis\\data\\LPA_Test2_Submarkets\\lpa_results_2_submarkets.csv", row.names = TRUE)
 
 # Group by cluster and get median
 submarket_medians <- aggregate(reduced_df, by = list(reduced_df$Class), FUN = "median")%>%

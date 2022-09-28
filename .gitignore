@@ -146,3 +146,4 @@ dmypy.json
 *.dbf
 *.prj
 *.shx
+.Rproj.user
