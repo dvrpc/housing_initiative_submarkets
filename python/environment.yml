@@ -7,6 +7,7 @@ packages:
   - seaborn
   - psycopg2
   - sqlalchemy
+  - seaborn
   - conda-forge:
     - matplotlib
     - geopandas
