@@ -3,7 +3,7 @@
 # Prepared for: Region Housing Initiative - Submarket Clustering Analysis
 
 # Set working directory
-setwd("G:\\Shared drives\\FY22 Regional Housing Initiative\\SubmarketAnalysis\\SubmarketClustering")
+setwd("C:\\Users\\bcarney\\Documents\\GitHub\\housing_initiative_submarkets\\R")
 
 #remove.packages("tidycensus")
 #install.packages("tidycensus", dependencies = TRUE)
