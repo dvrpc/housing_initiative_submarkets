@@ -9,15 +9,11 @@ The clustering algorithm requires a tabular dataset with continous variables. Si
 ### 1. ACS 5-Year Estimates
 We use the 2016-2020 ACS 5-Year Estimates survey at the census tract level for multiple variables, including housing density, median household income, vacancy rates, units in structure, and median household rent.
 
-### 2. Property sale data (Estated/TWG)
-We are planning on purchasing property sale data for two years, 2016 and 2021. Each record in the deeds/transaction dataset represents a transaction, which must be aggregated to the census tract level. The 2021 transactions will serve as the current year and we will use the median sales price at the tract level as one of the variables in the final dataset. To capture the change in the housing market, we will also calculate the percent change in median sale price at the tract level from 2016 to 2021, which will be another variable used in the dataset. To get these values, there are multiple steps in the filtering process. For example, we are only evaluating transactions for low-density housing (have not defined this yet--unclear if we are going to include duplexes through quadplexes). Additionally, these transactions should only be first mortgages, since second mortgages and refinancing are not a reflection of how much the property is going for on the open market. 
+### 2. Property sale data
+We purchased The Warren Group's (TWG) property sale data for two years, 2016 and 2021. Each record in the deeds/transaction dataset represents a transaction, which must be aggregated to the census tract level. The 2021 transactions will serve as the current year and we will use the median sales price at the tract level as one of the variables in the final dataset. To capture the change in the housing market, we will also calculate the percent change in median sale price at the tract level from 2016 to 2021, which will be another variable used in the dataset. To get these values, there are multiple steps in the filtering process. For example, we are only evaluating transactions for low-density housing (have not defined this yet--unclear if we are going to include duplexes through quadplexes). Additionally, these transactions should only be first mortgages, since second mortgages and refinancing are not a reflection of how much the property is going for on the open market. 
 
-### 3. HUD Location Affordability Index v.3
-The HUD Location Affordability Index v.3 was released in March 2019 and uses 2012-2016 ACS 5-Year Estimates. The Index provides standardized housing and transportation costs at the census tract level. There are eight household profiles to choose from--which vary by household income, size, and number of commuters (have not chosen which profile to use yet). 
-
-### 4. National Housing Preservation Database (NHPD)
+### 3. National Housing Preservation Database (NHPD)
 The NHPD is a point dataset of active subsidized housing developments in the country. It provides information such as the type of subsidy, number of units, and subsidy expiration date. For the tabular dataset, we will include a field that shows the percent of overall housing units that are subsidized (have not made a decision on which types of subsidies count yet). This can be done by aggregating the number of subsidized units at the tract level and dividing that by the total number of housing units, which is taken from the 2016-2020 ACS 5-Year Estimates.
 
-### 5. Home Mortgage Disclosure Act (HMDA) data
 
 ## Data Preparation
