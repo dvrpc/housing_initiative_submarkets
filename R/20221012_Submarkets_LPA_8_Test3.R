@@ -10,6 +10,7 @@ setwd("C:\\Users\\bcarney\\Documents\\GitHub\\housing_initiative_submarkets\\R")
 # install.packages("matrixStats")
 # install.packages("textshape")
 # install.packages("tidyr")
+install.packages("mplus")
 
 
 # Import libraries
@@ -73,3 +74,7 @@ submarket_medians <- aggregate(reduced_df, by = list(reduced_df$Class), FUN = "m
 
 # Export cluster medians
 write.csv(submarket_medians, "U:\\FY2022\\Planning\\RegionalHousingInitiative\\SubmarketAnalysis\\data\\LPA_Test3_Submarkets\\cluster_medians.csv")
+
+suppressMessages(library(tidyLPA))
+suppressMessages(mod_1c_v1 <- estimate_profiles(df = joined_df_clean[1:19], n_profiles = 1:20,
+                                                models = 1))
