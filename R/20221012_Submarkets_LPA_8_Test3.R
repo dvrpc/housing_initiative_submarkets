@@ -10,7 +10,6 @@ setwd("C:\\Users\\bcarney\\Documents\\GitHub\\housing_initiative_submarkets\\R")
 # install.packages("matrixStats")
 # install.packages("textshape")
 # install.packages("tidyr")
-install.packages("mplus")
 
 
 # Import libraries
@@ -40,7 +39,7 @@ joined_df <- merge(acs2020_raw, mediansaleprice_subsidizedhousing, by.x="GEOID",
 myVars <- c("HHINC_MED", "RENT_MED", "TEN_RENT", "TEN_OWN", "VCY", "HHI_150P", "YB_59E", "YB_6099", "YB_00L", "UNIT_1", "UNIT_2to4", "UNIT_5P", "pct_subsidized", "med21", "pct_diff", "HHS_1", "HHS_2to4", "HHS_5P", "hu_acre")
 myVars_Class <- c("HHINC_MED", "RENT_MED", "TEN_RENT", "TEN_OWN", "VCY", "HHI_150P", "YB_59E", "YB_6099", "YB_00L", "UNIT_1", "UNIT_2to4", "UNIT_5P", "pct_subsidized", "med21", "pct_diff", "HHS_1", "HHS_2to4", "HHS_5P", "hu_acre", "Class")
 
-tracts <- row.names(joined_df_clean)
+tracts <- row.names(joined_df)
 
 joined_df_clean <- joined_df %>%
   select(all_of(myVars)) %>%
@@ -49,8 +48,6 @@ joined_df_clean <- joined_df %>%
 joined_df_clean_medians <- joined_df_clean %>%
   apply(., 2, median)
 
-
-print(joined_df_clean_medians)
 
 # Export 1
 e1 <- joined_df_clean %>%
@@ -65,8 +62,17 @@ reduced_df <- export_1[myVars_Class]
 # Append index
 rownames(reduced_df) <- tracts
 
+# Create table with tracts and submarkets
+tract_submarket_table <- reduced_df %>%
+  select("Class")
+
+rownames(tract_submarket_table) <- tracts
+
 # Write csv
 write.csv(reduced_df, "U:\\FY2022\\Planning\\RegionalHousingInitiative\\SubmarketAnalysis\\data\\LPA_Test3_Submarkets\\lpa_results_3_submarkets.csv", row.names = TRUE)
+
+write.csv(tract_submarket_table, "U:\\FY2022\\Planning\\RegionalHousingInitiative\\SubmarketAnalysis\\data\\LPA_Test3_Submarkets\\tracts_submarkets.csv", row.names = TRUE)
+
 
 # Group by cluster and get median
 submarket_medians <- aggregate(reduced_df, by = list(reduced_df$Class), FUN = "median")%>%
