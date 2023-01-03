@@ -139,7 +139,7 @@ raw_data <- get_acs(geography = "tract",
 
 
 # Import Submarket Results
-tracts_submarkets <- read.csv("U:\\FY2022\\Planning\\RegionalHousingInitiative\\SubmarketAnalysis\\data\\LPA_Test3_Submarkets\\tracts_submarkets.csv", row.names = "X")
+tracts_submarkets <- read.csv("U:\\FY2022\\Planning\\RegionalHousingInitiative\\SubmarketAnalysis\\data\\LPA_Test3_Submarkets\\tracts_submarkets.csv", colClasses = c("X"="character"))
 
 
 # Overlay Variables
@@ -190,3 +190,12 @@ overlay_df <- raw_data %>%
   mutate(PCT_LAT = round(100 * (POP_LAT/POP_TOT), 1)) %>%
   mutate(UNEMP_RT = round(100 * (EMP_UNEM/EMP_CVLF), 1)) %>%
   select(GEOID, CARS_HH, CS_PUBT, CS_DRIVE, CS_WFH, ED_LHSC, ED_HSCH, ED_BACH, HC_BURD, HC_SEVB, PCT_WHI, PCT_BLK, PCT_AIA, PCT_ASN, PCT_HPI, PCT_OTH, PCT_TWO, PCT_WNH, PCT_LAT, UNEMP_RT)
+
+
+# Join Overlay DF with Submarket Results
+overlay_submarkets <- left_join(tracts_submarkets, overlay_df, by = c("X"="GEOID"))
+
+rownames(overlay_submarkets) <- overlay_submarkets$X
+
+# Export to csv
+write.csv(overlay_submarkets, "U:\\FY2022\\Planning\\RegionalHousingInitiative\\SubmarketAnalysis\\data\\LPA_Test3_Submarkets\\tracts_submarkets_overlays.csv")
