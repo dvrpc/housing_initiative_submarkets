@@ -1,5 +1,5 @@
 # Author: Brian Carney
-# Last updated: 12/27/2022
+# Last updated: 01/06/2023
 # Prepared for: Region Housing Initiative - Submarket Clustering Analysis Overlays
 
 # Set working directory
@@ -41,6 +41,7 @@ acs5_varlist_2020 <- load_variables(year = 2020,
 
 # ---- Define Variables ----
 acs5_20_overlay_vars <- c(
+  POP_TOT = "B01003_001",
   # Aggregate Number of Vehicles Available
   AGG_NUM_VEH = "B25046_001",
   # Means of Transportation to Work
@@ -189,7 +190,7 @@ overlay_df <- raw_data %>%
   mutate(PCT_WNH = round(100 * (POP_WNH/POP_TOT), 1)) %>%
   mutate(PCT_LAT = round(100 * (POP_LAT/POP_TOT), 1)) %>%
   mutate(UNEMP_RT = round(100 * (EMP_UNEM/EMP_CVLF), 1)) %>%
-  select(GEOID, CARS_HH, CS_PUBT, CS_DRIVE, CS_WFH, ED_LHSC, ED_HSCH, ED_BACH, HC_BURD, HC_SEVB, PCT_WHI, PCT_BLK, PCT_AIA, PCT_ASN, PCT_HPI, PCT_OTH, PCT_TWO, PCT_WNH, PCT_LAT, UNEMP_RT)
+  select(GEOID, POP_TOT, CARS_HH, CS_PUBT, CS_DRIVE, CS_WFH, ED_LHSC, ED_HSCH, ED_BACH, HC_BURD, HC_SEVB, PCT_WHI, PCT_BLK, PCT_AIA, PCT_ASN, PCT_HPI, PCT_OTH, PCT_TWO, PCT_WNH, PCT_LAT, UNEMP_RT)
 
 
 # Join Overlay DF with Submarket Results
@@ -199,3 +200,4 @@ rownames(overlay_submarkets) <- overlay_submarkets$X
 
 # Export to csv
 write.csv(overlay_submarkets, "U:\\FY2022\\Planning\\RegionalHousingInitiative\\SubmarketAnalysis\\data\\LPA_Test3_Submarkets\\tracts_submarkets_overlays.csv")
+write.csv(overlay_submarkets, "U:\\FY2022\\Planning\\RegionalHousingInitiative\\Submarket_Testing\\data\\LPA_Test3_Submarkets\\tracts_submarkets_overlays.csv")
