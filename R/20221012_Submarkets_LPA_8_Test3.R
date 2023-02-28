@@ -25,8 +25,9 @@ library(tidyr)
 acs2020_raw <- read.csv("U:\\FY2022\\Planning\\RegionalHousingInitiative\\SubmarketAnalysis\\data\\acs5_2020_variables.csv", colClasses = c("GEOID"="character"))
 
 mediansaleprice_subsidizedhousing <- read.csv("U:\\FY2022\\Planning\\RegionalHousingInitiative\\SubmarketAnalysis\\data\\region_tracts_mediansaleprice_subsidizedhousingunits.csv", colClasses = c("geoid"="character")) %>%
-  rename(subsidizedunits = region_subsidizedhousing_unitsbytract_Total.Subsidized.Units) %>%
-  mutate(subsidizedunits = ifelse(is.na(subsidizedunits), 0, subsidizedunits))
+  rename(subsidizedunits = Total.Subsidized.Units) %>%
+  mutate(subsidizedunits = ifelse(is.na(subsidizedunits), 0, subsidizedunits)) %>%
+  select(geoid, subsidizedunits, med21, pct_diff)
 
 # Join dataframes
 joined_df <- merge(acs2020_raw, mediansaleprice_subsidizedhousing, by.x="GEOID", by.y="geoid") %>%
