@@ -7,4 +7,3 @@ from  census.census_tracts_2020 tracts
 left join nhpd.region_subsidizedhousing_tracts a on
 	tracts.geoid = a.geoid
 group by tracts.geoid;
-
