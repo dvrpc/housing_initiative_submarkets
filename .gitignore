@@ -147,3 +147,6 @@ dmypy.json
 *.prj
 *.shx
 .Rproj.user
+
+#R Secrets
+secrets.R

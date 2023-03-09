@@ -19,6 +19,7 @@ setwd("C:\\Users\\bcarney\\Documents\\GitHub\\housing_initiative_submarkets\\R")
 #install.packages("tidycensus")
 #update.packages("tidycensus")
 
+
 # Load packages
 library(tidyverse)
 library(dplyr)
