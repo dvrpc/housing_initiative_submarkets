@@ -184,7 +184,7 @@ acs5_15_vars_tot <- c(
 dvrpc_states <- c(34, 42)
 dvrpc_fips <- c('34005|34007|34015|34021|42017|42029|42045|42091|42101')
 
-raw_data_15 <- get_acs(geography = "tract",
+raw_data_15 <- get_acs(geography = "block group",
                     variables = acs5_15_vars_tot,
                     year = 2015,
                     state = dvrpc_states,
@@ -198,27 +198,45 @@ raw_data_15 <- get_acs(geography = "tract",
   `colnames<-`(str_replace(colnames(.),"E$",""))
 
 # Import crosswalk
-crosswalk <- read.csv("https://www2.census.gov/geo/docs/maps-data/data/rel2020/tract/tab20_tract20_tract10_natl.txt", sep="|", colClasses = c("GEOID_TRACT_20" = "character", "GEOID_TRACT_10" = "character")) %>%
-  filter(str_detect(GEOID_TRACT_10, "^34005|^34007|^34015|^34021|^42017|^42029|^42045|^42091|^42101"))
+crosswalk <- read.csv("G:\\Shared drives\\FY22 Regional Housing Initiative\\Data\\NHGIS\\nhgis_bg2010_tr2020.csv", colClasses = c("bg2010gj" = "character", "bg2010ge" = "character",	"tr2020gj" = "character",	"tr2020ge" = "character"))
 
 
 # Join 2015 data with crosswalk
-raw_data_15_crosswalk <- merge(raw_data_15, crosswalk, by.x="GEOID_10", by.y="GEOID_TRACT_10")
+raw_data_15_crosswalk <- merge(raw_data_15, crosswalk, by.x="GEOID_10", by.y="bg2010ge")
 
-# Calculate share of Area
-raw_data_15_crosswalk <- raw_data_15_crosswalk %>%
-  mutate(ALAND_PCT = round(AREALAND_PART/AREALAND_TRACT_20, 3))
 
-# Calculate POP_TOT
-TOTPOP_2015_2020_TRACTS <- raw_data_15_crosswalk %>%
-  mutate(TOTPOP_15 = POP_TOT * ALAND_PCT) %>%
-  select(GEOID_TRACT_20, TOTPOP_15) %>%
-  group_by(GEOID_TRACT_20) %>%
-  summarise_if(is.numeric, sum, na.rm=TRUE)
+# Summarize data to 2020 tracts
+acs5_15_2020tracts <- raw_data_15_crosswalk %>%
+  select(POP_TOT, HH_TOT, UNITS_TOT, tr2020ge, wt_pop, wt_hh, wt_hu) %>%
+  mutate(POP_TOT_CALC = round(POP_TOT * wt_pop, 0)) %>%
+  mutate(HH_TOT_CALC = round(HH_TOT * wt_hh, 0)) %>%
+  mutate(UNITS_TOT_CALC = round(UNITS_TOT * wt_hu, 0)) %>%
+  select(tr2020ge, POP_TOT_CALC, HH_TOT_CALC, UNITS_TOT_CALC) %>%
+  group_by(tr2020ge) %>%
+  summarise(across(everything(), sum)) %>%
+  rename("GEOID" = "tr2020ge") %>%
+  rename("POP_TOT_15" = "POP_TOT_CALC") %>%
+  rename("HH_TOT_15" = "HH_TOT_CALC") %>%
+  rename("UNITS_TOT_15" = "UNITS_TOT_CALC")
+
 
 # Import 2020 dataset
 tracts_2020 <- read.csv("U:\\FY2022\\Planning\\RegionalHousingInitiative\\SubmarketAnalysis\\data\\acs5_2020_variables.csv", colClasses = c("GEOID"="character"))
 
 
 # Join datasets
-check_df <- left_join(tracts_2020, TOTPOP_2015_2020_TRACTS, by=c("GEOID"="GEOID_TRACT_20"))
+check_df <- left_join(tracts_2020, acs5_15_2020tracts, by="GEOID")
+
+# Import tracts with submarkets
+tracts_submarkets <- read.csv("U:\\FY2022\\Planning\\RegionalHousingInitiative\\SubmarketAnalysis\\data\\LPA_Test3_Submarkets\\lpa_results_3_submarkets.csv", colClasses = c("X" = "character")) %>%
+  rename("GEOID" = "X") %>%
+  select(GEOID, Class)
+
+# Join datasets
+change_df <- left_join(tracts_submarkets, check_df, by="GEOID") %>%
+  select(Class, POP_TOT, HH_TOT, UNITS_TOT, POP_TOT_15, HH_TOT_15, UNITS_TOT_15) %>%
+  group_by(Class) %>%
+  summarise(across(everything(), sum)) %>%
+  mutate(POP_TOT_CHG = round(100 * ((POP_TOT - POP_TOT_15)/POP_TOT_15), 1)) %>%
+  mutate(HH_TOT_CHG = round(100 * ((HH_TOT - HH_TOT_15)/HH_TOT_15), 1)) %>%
+  mutate(UNITS_TOT_CHG = round(100 * ((UNITS_TOT - UNITS_TOT_15)/UNITS_TOT_15), 1))
