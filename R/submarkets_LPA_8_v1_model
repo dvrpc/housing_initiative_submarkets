@@ -1,0 +1,96 @@
+# Import libraries
+library(tidyLPA)
+library(dplyr)
+library(magrittr)
+library(matrixStats)
+library(textshape)
+library(tidyr)
+library(tibble)
+library(sf)
+# install.packages("networkD3") 
+library(networkD3)
+
+setwd("PATH_TO_SECRETS_FILE")
+
+source("secrets.R")
+
+conn <- dbConnect(
+  RPostgres::Postgres(),
+  dbname = my_dbname,
+  host = my_host,
+  port = my_port,
+  user = my_username,
+  password = my_password
+)
+
+#census tracts:
+census_tracts_2020 <- read_sf("PATH_TO_TRACTS/tract_2020.shp") %>% dplyr::select(geoid)
+
+# Import data
+acs2020_raw <- read.csv("U:\\FY2022\\Planning\\RegionalHousingInitiative\\SubmarketAnalysis\\data\\acs5_2020_variables.csv", colClasses = c("GEOID"="character"))
+
+myVars <- c("HHINC_MED", "RENT_MED", "TEN_RENT", "TEN_OWN", "VCY", "HHI_150P", "YB_59E", "YB_6099", "YB_00L", "UNIT_1", "UNIT_2to4", "UNIT_5P", "pct_subsidized", "med21", "pct_diff", "HHS_1", "HHS_2to4", "HHS_5P", "hu_acre")
+myVars_Class <- c("HHINC_MED", "RENT_MED", "TEN_RENT", "TEN_OWN", "VCY", "HHI_150P", "YB_59E", "YB_6099", "YB_00L", "UNIT_1", "UNIT_2to4", "UNIT_5P", "pct_subsidized", "med21", "pct_diff", "HHS_1", "HHS_2to4", "HHS_5P", "hu_acre", "Class")
+
+mediansaleprice_subsidizedhousing_new <- read.csv("C:/Users/ifeiglin/Documents/ilil_files/TWG/region_tracts_mediansaleprice_subsidizedhousingunits_new.csv", colClasses = c("geoid"="character"))%>%
+  rename(subsidizedunits = Total.Subsidized.Units) %>%
+  mutate(subsidizedunits = ifelse(is.na(subsidizedunits), 0, subsidizedunits)) %>%
+  select(geoid, subsidizedunits, med21, pct_diff)
+
+joined_df <- merge(acs2020_raw, mediansaleprice_subsidizedhousing_new, by.x="GEOID", by.y="geoid") %>%
+  drop_na(med21) %>% 
+  filter(HH_TOT > 0) %>%
+  mutate(pct_subsidized = round((subsidizedunits/UNITS_TOT) * 100, 2)) %>%
+  column_to_rownames(., "GEOID")
+
+tracts <- row.names(joined_df)
+
+joined_df_clean <- joined_df %>%
+  select(all_of(myVars)) %>%
+  mutate_if(is.numeric, function(x) ifelse(is.na(x), median(x, na.rm = T), x))
+
+# getting results not scaled (for merge): 
+
+export_0 <- get_data(joined_df_clean %>%
+                       estimate_profiles(8))
+
+reduced_df <- export_0[myVars_Class]
+rownames(reduced_df) <- tracts
+
+reduced_df <- rownames_to_column(reduced_df, var = "geoid")
+reduced_df <- merge(census_tracts_2020,reduced_df,by="geoid",all=TRUE)
+
+# scale & v1 variables:
+
+joined_df_scaled_reduced_v1 <- joined_df_clean %>% 
+  dplyr::select(-TEN_RENT,-HHI_150P,-YB_6099,-UNIT_5P,-HHS_1)
+
+joined_df_scaled_reduced_v1 <- scale(joined_df_scaled_reduced_v1)
+
+export_1 <- get_data(joined_df_scaled_reduced_v1 %>% estimate_profiles(8))
+
+reduced_df_scaled_v1 <- export_1[c("HHINC_MED", "RENT_MED", "TEN_OWN", "VCY",  "YB_59E", 
+                                  "YB_00L", "UNIT_1", "UNIT_2to4",  "pct_subsidized", 
+                                   "med21", "pct_diff", "HHS_2to4", "HHS_5P", "hu_acre", "Class")]
+
+rownames(reduced_df_scaled_v1) <- tracts
+
+reduced_df_scaled_v1 <- rownames_to_column(reduced_df_scaled_v1, var = "geoid")
+reduced_df_scaled_v1 <- merge(census_tracts_2020,reduced_df_scaled_v1,by="geoid",all=TRUE)
+
+reduced_df_scaled_v1 %>% group_by(Class) %>% summarize(n())
+
+temp <- merge(reduced_df_scaled_v1 %>% dplyr::select(geoid,Class) %>% st_set_geometry(NULL),
+              reduced_df %>% dplyr::select(-Class)%>% st_set_geometry(NULL), by="geoid") %>% dplyr::select(-geoid)
+
+temp <- drop_na(temp)
+
+submarket_medians_v1_fixed <- aggregate(temp,by =list(temp$Class), FUN = "median")%>% subset(select = -c(Group.1))
+
+# to write into csv
+#write.csv(submarket_medians_v1_fixed,"PATH_HERE/submarket_medians_v1_fixed.csv")
+
+# to export a shapefile
+st_write(reduced_df_scaled_v1, "PATH_HERE/submarkets_clusters_scaled_reduced_v1.shp")
+
+dbDisconnect(conn)
