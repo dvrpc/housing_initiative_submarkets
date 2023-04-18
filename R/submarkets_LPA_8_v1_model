@@ -32,7 +32,7 @@ acs2020_raw <- read.csv("U:\\FY2022\\Planning\\RegionalHousingInitiative\\Submar
 myVars <- c("HHINC_MED", "RENT_MED", "TEN_RENT", "TEN_OWN", "VCY", "HHI_150P", "YB_59E", "YB_6099", "YB_00L", "UNIT_1", "UNIT_2to4", "UNIT_5P", "pct_subsidized", "med21", "pct_diff", "HHS_1", "HHS_2to4", "HHS_5P", "hu_acre")
 myVars_Class <- c("HHINC_MED", "RENT_MED", "TEN_RENT", "TEN_OWN", "VCY", "HHI_150P", "YB_59E", "YB_6099", "YB_00L", "UNIT_1", "UNIT_2to4", "UNIT_5P", "pct_subsidized", "med21", "pct_diff", "HHS_1", "HHS_2to4", "HHS_5P", "hu_acre", "Class")
 
-mediansaleprice_subsidizedhousing_new <- read.csv("C:/Users/ifeiglin/Documents/ilil_files/TWG/region_tracts_mediansaleprice_subsidizedhousingunits_new.csv", colClasses = c("geoid"="character"))%>%
+mediansaleprice_subsidizedhousing_new <- read.csv("PATH_TO/region_tracts_mediansaleprice_subsidizedhousingunits_new.csv", colClasses = c("geoid"="character"))%>%
   rename(subsidizedunits = Total.Subsidized.Units) %>%
   mutate(subsidizedunits = ifelse(is.na(subsidizedunits), 0, subsidizedunits)) %>%
   select(geoid, subsidizedunits, med21, pct_diff)
