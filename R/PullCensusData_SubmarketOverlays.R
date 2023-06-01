@@ -1,5 +1,5 @@
 # Author: Brian Carney
-# Last updated: 01/06/2023
+# Last updated: 06/01/2023
 # Prepared for: Region Housing Initiative - Submarket Clustering Analysis Overlays
 
 # Set working directory
@@ -140,7 +140,7 @@ raw_data <- get_acs(geography = "tract",
 
 
 # Import Submarket Results
-tracts_submarkets <- read.csv("U:\\FY2022\\Planning\\RegionalHousingInitiative\\SubmarketAnalysis\\data\\LPA_Test3_Submarkets\\tracts_submarkets.csv", colClasses = c("X"="character"))
+tracts_submarkets <- read.csv("G:\\Shared drives\\FY22 Regional Housing Initiative\\SubmarketAnalysis\\20230517_submarket_review\\v1\\data\\tracts_class.csv", colClasses = c("GEOID" = "character"))
 
 
 # Overlay Variables
@@ -194,10 +194,9 @@ overlay_df <- raw_data %>%
 
 
 # Join Overlay DF with Submarket Results
-overlay_submarkets <- left_join(tracts_submarkets, overlay_df, by = c("X"="GEOID"))
+overlay_submarkets <- left_join(tracts_submarkets, overlay_df, by = "GEOID")
 
-rownames(overlay_submarkets) <- overlay_submarkets$X
+rownames(overlay_submarkets) <- overlay_submarkets$GEOID
 
 # Export to csv
-write.csv(overlay_submarkets, "U:\\FY2022\\Planning\\RegionalHousingInitiative\\SubmarketAnalysis\\data\\LPA_Test3_Submarkets\\tracts_submarkets_overlays.csv")
-write.csv(overlay_submarkets, "U:\\FY2022\\Planning\\RegionalHousingInitiative\\Submarket_Testing\\data\\LPA_Test3_Submarkets\\tracts_submarkets_overlays.csv")
+write.csv(overlay_submarkets, "G:\\Shared drives\\FY22 Regional Housing Initiative\\SubmarketAnalysis\\20230517_submarket_review\\v1\\data\\v1_overlays.csv")
