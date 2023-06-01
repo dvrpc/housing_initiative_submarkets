@@ -31,7 +31,7 @@ mediansaleprice_subsidizedhousing <- read.csv("U:\\FY2022\\Planning\\RegionalHou
 
 # Join dataframes
 joined_df <- merge(acs2020_raw, mediansaleprice_subsidizedhousing, by.x="GEOID", by.y="geoid") %>%
-  drop_na(med16, med21) %>%
+  drop_na(med21) %>%
   filter(HH_TOT > 0) %>%
   mutate(pct_subsidized = round((subsidizedunits/UNITS_TOT) * 100, 2)) %>%
   column_to_rownames(., "GEOID")
