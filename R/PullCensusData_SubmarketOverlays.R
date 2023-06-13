@@ -1,5 +1,5 @@
 # Author: Brian Carney
-# Last updated: 06/01/2023
+# Last updated: 06/13/2023
 # Prepared for: Region Housing Initiative - Submarket Clustering Analysis Overlays
 
 # Set working directory
@@ -198,5 +198,15 @@ overlay_submarkets <- left_join(tracts_submarkets, overlay_df, by = "GEOID")
 
 rownames(overlay_submarkets) <- overlay_submarkets$GEOID
 
+# Calculate Regional Median Values for Overlays
+overlay_submarkets_median_df <- overlay_submarkets %>%
+  select(-X, -GEOID)
+
+regional_medians <- overlay_submarkets_median_df %>%
+  summarise(across(everything(), median))
+
+
 # Export to csv
 write.csv(overlay_submarkets, "G:\\Shared drives\\FY22 Regional Housing Initiative\\SubmarketAnalysis\\20230517_submarket_review\\v1\\data\\v1_overlays.csv")
+write.csv(regional_medians, "G:\\Shared drives\\FY22 Regional Housing Initiative\\SubmarketAnalysis\\20230517_submarket_review\\v1\\data\\v1_overlays_regional_median.csv")
+
