@@ -1,5 +1,5 @@
 # Author: Brian Carney
-# Last updated: 03/16/2023
+# Last updated: 06/13/2023
 # Prepared for: Region Housing Initiative - Submarket Clustering Analysis
 
 # Set working directory
@@ -242,8 +242,7 @@ check_df <- left_join(raw_data_20, acs5_15_2020tracts, by="GEOID")
 
 
 # Import tracts with submarkets
-tracts_submarkets <- read.csv("U:\\FY2022\\Planning\\RegionalHousingInitiative\\SubmarketAnalysis\\data\\LPA_Test3_Submarkets\\lpa_results_3_submarkets.csv", colClasses = c("X" = "character")) %>%
-  rename("GEOID" = "X") %>%
+tracts_submarkets <- read.csv("U:\\FY2022\\Planning\\RegionalHousingInitiative\\SubmarketAnalysis\\data\\v1\\tracts_class.csv", colClasses = c("GEOID" = "character")) %>%
   select(GEOID, Class)
 
 # Join datasets
@@ -263,4 +262,4 @@ change_df <- left_join(tracts_submarkets, check_df, by="GEOID") %>%
   mutate(UNIT_50P_CHG = round(100 * ((UNIT_50P - UNIT_50P_15)/UNIT_50P_15), 1))
 
 
-write.csv(change_df, "U:\\FY2022\\Planning\\RegionalHousingInitiative\\SubmarketAnalysis\\data\\LPA_Test3_Submarkets\\submarket_chg_2015_2020.csv")
+write.csv(change_df, "U:\\FY2022\\Planning\\RegionalHousingInitiative\\SubmarketAnalysis\\data\\v1\\submarket_chg_2015_2020.csv")
