@@ -1,33 +1,63 @@
-# housing_initiative_submarkets
-
-## Introduction
+# Introduction
 As part of the Regional Housing Initiative (RHI), the team conducted a submarket analysis. This analysis identifies census tracts with similar housing characteristics (density, price, market conditions) and groups them accordingly. This submarket analysis uses a Latent Profile Analysis (LPA) via the mclust package in R to group the region's 1,407 eligible census tracts (tracts with no households or population were removed) into one of eight submarkets. The team reviewed the existing conditions of these submarkets to identify their housing challenges and appropriate policies and strategies for each submarket.
 
 ## Data
-The clustering algorithm requires a tabular dataset with continous variables. Since the submarket analysis evaluates a wide array of variables (units in structure, density, sale price, subsidized housing units, transportation costs, etc.), there are multiple datasets that comprise the final tabular dataset. We use the following datsets in the submarket analysis:
+The submarket analysis uses data from three sources:
 
-### 1. ACS 5-Year Estimates
-We use the 2016-2020 ACS 5-Year Estimates survey at the census tract level for multiple variables, including housing density, median household income, vacancy rates, units in structure, and median household rent. We use 16 indicators from this dataset.
+### 1. American Community Survey (ACS) 5-Year Estimates (2016-2020)
 
-### 2. Property sale data
-We purchased The Warren Group's (TWG) property sale data for two years, 2016 and 2021. For both years, we identified the single-family residential median sale price at the census tract level. We use 2021 as the current median single-family sale price and the percent change in the median single-family sale price from 2016 to 2021 as our two indicators from this dataset.
+Inputs: 
+- Median Household Income
+- Median Gross Rent
+- Percent Cost Burden (combined owner- and renter-occupied cost burden)
+- Percent Owner-Occupied
+- Vacancy Rate
+- Percent of Housing Units Built in 1959 or Earlier
+- Percent of Housing Units Built Since 2000
+- Percent of Housing Units that are 1 Unit in Structure
+- Percent of Housing Units that are 2 to 4 Units in Structure
+- Percent of Households that are 2 to 4 Persons
+- Percent of Households that are 5 or More Persons
+- Housing Units per Acre
+
+For binary and categorical inputs (tenure, age of housing stock, units in structure, household size), we removed at least one input to avoid collinearity in our model.
+
+Removed inputs:
+- Percent Owner-Occupied
+- Percent of Housing Units Built Between 1960 and 1999
+- Percent of Housing Units that are 5 or More Units in Structure
+- Percent of Households that are 1 Person
+
+### 2. Property Sale Data
+Inputs:
+- Median Single Family Residential Sale Price, 2021
+- Percent Change in Median Single Family Residential Sale Price (2016-2021)
+
+We purchased The Warren Group's (TWG) property sale data for two years, 2016 and 2021. For both years, we selected single-family residential property transactions with a sale price of at least $50,000. We selected single-family properties exclusively due to the difficulty in adjusting prices for multifamily properties. Additionally, we set a price floor of $50,000 to filter out low-cost transactions. We use 2021 as the current median single-family sale price and the percent change in the median single-family sale price from 2016 to 2021 as our two indicators from this dataset.
 
 ### 3. National Housing Preservation Database (NHPD)
-The NHPD is a point dataset of active subsidized housing developments in the country. It provides information such as the type of subsidy, number of units, and subsidy expiration date. For the tabular dataset, we calculate the share of overall housing units at the census tract level that are federally subsidized (Public Housing, Low-Income Housing Tax Credit, and Project-Based Section 8).
+Inputs:
+- Percent of Housing Units that are Federally Subsidized
+
+The NHPD is a point dataset of active subsidized housing developments in the country. It provides information such as the type of subsidy, number of units, and subsidy expiration date. Using this database, we calculate the share of overall housing units at the census tract level that are federally subsidized (Public Housing, Low-Income Housing Tax Credit, and Project-Based Section 8).
+
+## Eligible Tracts
+The DVRPC region has 1,449 census tracts. However, we removed 42 census tracts from our submarket analysis because the population and/or number of households in these tracts was zero. Therefore, we conducted the submarket analysis using 1,407 census tracts.
+
 
 ## Script Order
+- R/PullCensusData_LPA_3.R
+- Python/nhpd_data_export/to_sql.py
+- Sql/region_properties_ph_s8_lihtc.sql
+- Sql/region_subsidizedhousing_tracts.sql
+- Sql/region_subsidizedhousingunits_bytract.sql
+- Python/twg_export/to_sql.py
+- twg_deeds_2016.sql
+- twg_deeds_2021.sql
+- median2016.sql
+- median2021.sql
+- deeds_tracts_mediansaleprice_20162021.sql
+- Sql/region_tracts_mediansaleprice_subsidizehousingunits.sql
+- Python/region_tracts_mediansaleprice_subsidizedhousingunits.sql
+- R/20221012_Submarkets_LPA_8_Test3.R
 
-1.    R/PullCensusData_LPA_3.R
-2.    Python/nhpd_data_export/to_sql.py
-3.    Sql/region_properties_ph_s8_lihtc.sql
-4.    Sql/region_subsidizedhousing_tracts.sql
-5.    Sql/region_subsidizedhousingunits_bytract.sql
-6.    Python/twg_export/to_sql.py
-7.    twg_deeds_2016.sql
-8.    twg_deeds_2021.sql
-8.    median2016.sql
-9.    median2021.sql
-10.   deeds_tracts_mediansaleprice_20162021.sql
-11.   Sql/region_tracts_mediansaleprice_subsidizehousingunits.sql
-12.   Python/region_tracts_mediansaleprice_subsidizedhousingunits.sql
-13.   R/20221012_Submarkets_LPA_8_Test3.R
