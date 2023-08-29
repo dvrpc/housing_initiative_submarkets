@@ -12,10 +12,12 @@ packages:
     - matplotlib
     - geopandas
     - pyproj
+    - python-dotenv
   - pip:
     - black
     - openpyxl
     - scikit-learn
     - scikit-learn-extra
+    - python-dotenv
 dependencies:
   - python = 3.9*
