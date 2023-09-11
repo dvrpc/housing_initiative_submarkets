@@ -8,4 +8,8 @@ engine = create_engine(
 
 circuittrails = pd.read_sql("select * from public.circuittrails", engine)
 
-print(circuittrails)
+submarkets = pd.read_sql("select * from submarkets.submarket_results", engine)
+
+submarkets = submarkets[["GEOID", "Class", "geometry"]]
+
+print(submarkets)
