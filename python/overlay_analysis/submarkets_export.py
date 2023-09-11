@@ -1,17 +1,12 @@
-import pandas as pd
 import geopandas as gp
-import os
 from dotenv import load_dotenv, find_dotenv
 from sqlalchemy import create_engine
-import psycopg2
-import geoalchemy2
+from settings import postgres_pw
 
 load_dotenv(find_dotenv())
 
-pg_password = os.environ.get("postgres_password")
-
 engine = create_engine(
-    "postgresql://postgres:{}@localhost:5433/housing_initiative".format(pg_password)
+    "postgresql://postgres:{}@localhost:5433/housing_initiative".format(postgres_pw)
 )
 
 
