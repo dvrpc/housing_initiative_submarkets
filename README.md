@@ -9,7 +9,6 @@ The submarket analysis uses data from three sources:
 Inputs: 
 - Median Household Income
 - Median Gross Rent
-- Percent Cost Burden (combined owner- and renter-occupied cost burden)
 - Percent Owner-Occupied
 - Vacancy Rate
 - Percent of Housing Units Built in 1959 or Earlier
