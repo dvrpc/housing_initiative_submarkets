@@ -1,12 +1,14 @@
+import sys
 import pandas as pd
 import geopandas as gpd
 from sqlalchemy import create_engine
+
+sys.path.insert(0, "C:/Users/bcarney/Documents/GitHub/housing_initiative_submarkets/python")
 from settings import postgres_pw
 
 engine = create_engine(
     "postgresql://postgres:{}@localhost:5433/housing_initiative".format(postgres_pw)
 )
-
 
 # Join Submarket Results and Circuit Trails
 sql = """
@@ -47,11 +49,11 @@ left join submarkets.submarket_results sr on
 
 
 gdf = gpd.read_postgis(sql, engine, geom_col="geometry")
-"""gdf.to_file(
+gdf.to_file(
     "U:\\FY2022\Planning\\RegionalHousingInitiative\\SubmarketAnalysis\\shapefiles\\overlays\\submarkets_circuittrails.shp",
     driver="ESRI Shapefile",
 )
-"""
+
 
 # Summarize Circuit Trails by Submarket and Circuit Phase
 submarkets_circuittrails_byclass = pd.read_sql(
