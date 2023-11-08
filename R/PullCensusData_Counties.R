@@ -5,11 +5,6 @@
 # Set working directory
 setwd("C:\\Users\\bcarney\\Documents\\GitHub\\housing_initiative_submarkets\\R")
 
-#remove.packages("tidycensus")
-#install.packages("tidycensus", dependencies = TRUE)
-
-#remove.packages("dplyr")
-#install.packages("dplyr", dependencies = TRUE)
 
 # Install necessary packages
 #install.packages("censusapi")
@@ -18,6 +13,7 @@ setwd("C:\\Users\\bcarney\\Documents\\GitHub\\housing_initiative_submarkets\\R")
 #install.packages("rgdal")
 #install.packages("tidycensus")
 #update.packages("tidycensus")
+#install.packages("RPostgreSQL")
 
 
 # Load packages
@@ -26,9 +22,10 @@ library(dplyr)
 library(rgdal)
 library(tidycensus)
 library(censusapi)
+library(RPostgreSQL)
 
 #Load Census API key
-census_api_key("e6cd8f90ccb0acacdfa5373911a2e73b96dbd792", install=TRUE, overwrite=TRUE)
+census_api_key = (Sys.getenv("CENSUS_API_KEY"))
 readRenviron("~/.Renviron")
 
 # acs2019vars <-load_variables(year=2019, dataset="acs5", cache=FALSE)
@@ -202,8 +199,10 @@ raw_data <- get_acs(geography = "county",
   select(GEOID, year, ends_with("E"), -NAME)%>%
   `colnames<-`(str_replace(colnames(.),"E$",""))
 
-# Import Housing Unit Density File
-hu_density <- read.csv("U:\\FY2022\\Planning\\RegionalHousingInitiative\\SubmarketAnalysis\\data\\housing_unit_density.csv", colClasses = c("geoid"="character"))
+# Connect to Postgres
+con <- dbConnect(PostgreSQL(), user= "dvrpc_viewer", host="gis-db", password=Sys.getenv("gis_pw"), dbname="gis")
+test = RPostgreSQL::dbGetQuery(conn = con, statement = "select geoid, aland from demographics.census_counties_2020 where geoid in ('34005', '34007', '34015', '34021', '42017', '42029', '42045', '42091', '42101');")
+
 
 
 # Join with Raw Data
