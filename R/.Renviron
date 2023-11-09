@@ -1,0 +1,3 @@
+Sys.setenv(CENSUS_API_KEY = "e6cd8f90ccb0acacdfa5373911a2e73b96dbd792")
+Sys.setenv(gis_pw = "viewer")
+Sys.setenv(housing_db_pw = "dvrpc")
