@@ -1,12 +1,14 @@
 import pandas as pd
+import numpy as np
 from sqlalchemy import create_engine
-from settings import census_api, postgres_pw, gis_pw
+from settings import postgres_pw, gis_pw
+
 
 gis_engine = create_engine(
     "postgresql://dvrpc_viewer:{}@gis-db:5432/gis".format(gis_pw)
 )
 
-twg_engine = create_engine(
+housing_engine = create_engine(
     "postgresql://postgres:{}@localhost:5433/housing_initiative".format(postgres_pw)
 )
 
@@ -15,10 +17,9 @@ twg_engine = create_engine(
 census = pd.read_csv(
     "U:/FY2022/Planning/RegionalHousingInitiative/SubmarketAnalysis/data/submarket_inputs_countysummary.csv"
 )
-print(census)
 
 
-# Import aland
+# Import county area
 county_area = pd.read_sql(
     """select geoid, aland from demographics.census_counties_2020 where geoid in ('34005', '34007', '34015', '34021', '42017', '42029', '42045', '42091', '42101')
                     """,
@@ -71,11 +72,92 @@ housing_density_join["hu_acre"] = round(
     (housing_density_join["UNITS_TOT"] / housing_density_join["acres"]), 2
 )
 
-
+# TWG 2021
 twg_2021 = pd.read_sql(
-    """select * from twg.twg_deeds_2021;
+    """select "FIPS", "STATE", "COUNTY", "PRICE" from twg.twg_deeds_2021 where "PRICE" > 50000 and "DEEDTYPE" in ('14', '15', '27', '55') and "PROPUSE" in (1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009);
                        """,
-    twg_engine,
+    housing_engine,
 )
 
-print(twg_2021)
+twg_2021 = twg_2021[["FIPS", "PRICE"]]
+twg_2021 = twg_2021.rename(columns={"PRICE": "PRICE_21"})
+twg_2021["FIPS"] = twg_2021["FIPS"].astype(str)
+
+twg_2021_county_medians = twg_2021.groupby("FIPS").median()
+
+# TWG 2016
+twg_2016 = pd.read_sql(
+    """select "FIPS", "STATE", "COUNTY", "PRICE" from twg.twg_deeds_2016 where "PRICE" > 50000 and "DEEDTYPE" in ('14', '15', '27', '55') and "PROPUSE" in (1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009);
+                       """,
+    housing_engine,
+)
+
+twg_2016 = twg_2016[["FIPS", "PRICE"]]
+twg_2016 = twg_2016.rename(columns={"PRICE": "PRICE_16"})
+twg_2016["FIPS"] = twg_2016["FIPS"].astype(str)
+
+twg_2016_county_medians = twg_2016.groupby("FIPS").median()
+twg_2016_county_medians["PRICE_IA"] = twg_2016_county_medians["PRICE_16"] * 1.1273
+
+# Join TWG Data
+twg = pd.merge(
+    twg_2021_county_medians, twg_2016_county_medians, left_index=True, right_index=True
+)
+
+twg["PRICE_IA_CHG"] = round((twg["PRICE_21"] - twg["PRICE_IA"]) / twg["PRICE_IA"], 3)
+twg["PRICE_CHG"] = round((twg["PRICE_21"] - twg["PRICE_16"]) / twg["PRICE_16"], 3)
+
+# NHPD Data
+nhpd = pd.read_sql(
+    """select "County Code", "Total Units", "S8_1_AssistedUnits", "S8_2_AssistedUnits", "LIHTC_1_AssistedUnits", "LIHTC_2_AssistedUnits", "PH_1_AssistedUnits", "PH_2_AssistedUnits" from nhpd.region_properties_ph_s8_lihtc;
+                       """,
+    housing_engine,
+)
+
+
+nhpd["County Code"] = nhpd["County Code"].astype(str)
+nhpd["County Code"] = nhpd["County Code"].str.slice(0, 5)
+
+nhpd = nhpd.fillna(value=0)
+
+nhpd["S8_1_AssistedUnits"] = nhpd["S8_1_AssistedUnits"].astype(int)
+
+print(nhpd.dtypes)
+
+
+columns = [
+    "S8_1_AssistedUnits",
+    "S8_2_AssistedUnits",
+    "LIHTC_1_AssistedUnits",
+    "LIHTC_2_AssistedUnits",
+    "PH_1_AssistedUnits",
+    "PH_2_AssistedUnits",
+]
+
+
+def column_types(column):
+    for column in columns:
+        nhpd[column] = nhpd[column].astype(int)
+
+
+column_types(columns)
+
+nhpd["subsidized_units"] = (
+    nhpd["S8_1_AssistedUnits"]
+    + nhpd["S8_2_AssistedUnits"]
+    + nhpd["LIHTC_1_AssistedUnits"]
+    + nhpd["LIHTC_2_AssistedUnits"]
+    + nhpd["PH_1_AssistedUnits"]
+    + nhpd["PH_2_AssistedUnits"]
+)
+
+nhpd = nhpd.groupby("County Code").sum()
+
+print(nhpd)
+
+"""subsidized = pd.merge(nhpd, housing_density, left_index=True, right_on="fips")
+
+subsidized["pct_subsidized"] = round(
+    subsidized["Total Units"] / subsidized["UNITS_TOT"], 3
+)
+print(subsidized)"""
