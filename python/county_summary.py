@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import geopandas
 from sqlalchemy import create_engine
 from settings import postgres_pw, gis_pw
 
@@ -122,8 +123,6 @@ nhpd = nhpd.fillna(value=0)
 
 nhpd["S8_1_AssistedUnits"] = nhpd["S8_1_AssistedUnits"].astype(int)
 
-print(nhpd.dtypes)
-
 
 columns = [
     "S8_1_AssistedUnits",
@@ -153,11 +152,40 @@ nhpd["subsidized_units"] = (
 
 nhpd = nhpd.groupby("County Code").sum()
 
-print(nhpd)
+nhpd = nhpd[["subsidized_units"]]
 
-"""subsidized = pd.merge(nhpd, housing_density, left_index=True, right_on="fips")
+subsidized = pd.merge(nhpd, housing_density, left_index=True, right_on="fips")
 
 subsidized["pct_subsidized"] = round(
-    subsidized["Total Units"] / subsidized["UNITS_TOT"], 3
+    subsidized["subsidized_units"] / subsidized["UNITS_TOT"], 3
 )
-print(subsidized)"""
+
+subsidized = subsidized.drop(columns=["UNITS_TOT"])
+
+# Join subsidized and twg
+sub_twg = pd.merge(subsidized, twg, left_on="fips", right_index=True)
+
+
+# Join with housing density
+density = housing_density_join[["fips", "hu_acre"]]
+
+sub_twg_density = pd.merge(sub_twg, density, left_on="fips", right_on="fips")
+
+# Join with census
+submarket_inputs_counties = pd.merge(
+    census, sub_twg_density, left_on="county", right_on="county"
+)
+
+submarket_inputs_counties.set_index("county", inplace=True)
+
+# Import spatial data
+county_shape = pd.read_sql(
+    """select geoid, shape from demographics.census_counties_2020 where geoid in ('34005', '34007', '34015', '34021', '42017', '42029', '42045', '42091', '42101')
+                    """,
+    gis_engine,
+)
+
+
+submarket_inputs_counties.to_csv(
+    "U:/FY2022/Planning/RegionalHousingInitiative/SubmarketAnalysis/data/v1/submarkets_inputs_counties.csv"
+)
