@@ -73,4 +73,77 @@ housing_density_join["hu_acre"] = round(
     (housing_density_join["UNITS_TOT"] / housing_density_join["acres"]), 2
 )
 
-print(housing_density_join)
+regional_summary = pd.read_csv(
+    "U:/FY2022/Planning/RegionalHousingInitiative/SubmarketAnalysis/data/v1/submarket_inputs_regionalsummary.csv"
+)
+
+regional_totals = regional_summary[
+    [
+        "POP_TOT",
+        "HH_TOT",
+        "UNITS_TOT",
+        "UNITS_OCC",
+        "UNITS_VAC",
+        "TEN_TOT",
+        "TEN_O",
+        "TEN_R",
+        "UNITS_STR",
+        "UNIT_1DET",
+        "UNIT_1ATT",
+        "UNIT_2",
+        "UNIT_3or4",
+        "UNIT_5to9",
+        "UNIT_1019",
+        "UNIT_2049",
+        "UNIT_50P",
+        "UNIT_MOB",
+        "YB_39E",
+        "YB_40to49",
+        "YB_50to59",
+        "YB_60to69",
+        "YB_70to79",
+        "YB_80to89",
+        "YB_90to99",
+        "YB_00to09",
+        "YB_10to13",
+        "YB_14L",
+    ]
+]
+
+regional_totals = regional_totals.sum(axis=0)
+
+
+pct_owner = round(regional_totals["TEN_O"] / regional_totals["TEN_TOT"], 3)
+pct_renter = round(regional_totals["TEN_R"] / regional_totals["TEN_TOT"], 3)
+
+vcy_rate = round(regional_totals["UNITS_VAC"] / regional_totals["UNITS_TOT"], 3)
+
+unit_1det = round(regional_totals["UNIT_1DET"] / regional_totals["UNITS_STR"], 3)
+unit_1att = round(regional_totals["UNIT_1ATT"] / regional_totals["UNITS_STR"], 3)
+unit_2 = round(regional_totals["UNIT_2"] / regional_totals["UNITS_STR"], 3)
+unit_3or4 = round(regional_totals["UNIT_3or4"] / regional_totals["UNITS_STR"], 3)
+unit_5to9 = round(regional_totals["UNIT_5to9"] / regional_totals["UNITS_STR"], 3)
+unit_1019 = round(regional_totals["UNIT_1019"] / regional_totals["UNITS_STR"], 3)
+unit_2049 = round(regional_totals["UNIT_2049"] / regional_totals["UNITS_STR"], 3)
+unit_50p = round(regional_totals["UNIT_50P"] / regional_totals["UNITS_STR"], 3)
+unit_mob = round(regional_totals["UNIT_MOB"] / regional_totals["UNITS_STR"], 3)
+
+"""
+print(unit_1det)
+print(unit_1att)
+print(unit_2)
+print(unit_3or4)
+print(unit_5to9)
+print(unit_1019)
+print(unit_2049)
+print(unit_50p)
+print(unit_mob)
+"""
+
+
+region_area = county_area["acres"].sum()
+
+region_housing_density = round(regional_totals["UNITS_TOT"] / region_area, 2)
+
+print(region_housing_density)
+print(region_area)
