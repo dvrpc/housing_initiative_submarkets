@@ -46,17 +46,16 @@ The DVRPC region has 1,449 census tracts. However, we removed 42 census tracts f
 
 ## Script Order
 - R/PullCensusData_LPA_3.R
-- Python/nhpd_data_export/to_sql.py
-- Sql/region_properties_ph_s8_lihtc.sql
-- Sql/region_subsidizedhousing_tracts.sql
-- Sql/region_subsidizedhousingunits_bytract.sql
-- Python/twg_export/to_sql.py
-- twg_deeds_2016.sql
-- twg_deeds_2021.sql
-- median2016.sql
-- median2021.sql
-- deeds_tracts_mediansaleprice_20162021.sql
-- Sql/region_tracts_mediansaleprice_subsidizehousingunits.sql
-- Python/region_tracts_mediansaleprice_subsidizedhousingunits.sql
+- python/nhpd_to_sql.py
+- sql/region_properties_ph_s8_lihtc.sql
+- sql/region_subsidizedhousing_tracts.sql
+- sql/region_subsidizedhousingunits_bytract.sql
+- python/twg_to_sql.py
+- sql/twg_deeds_2016.sql
+- sql/twg_deeds_2021.sql
+- sql/median2016.sql
+- sql/median2021.sql
+- sql/deeds_tracts_mediansaleprice_20162021.sql
+- sql/region_tracts_mediansaleprice_subsidizehousingunits.sql
 - R/20221012_Submarkets_LPA_8_Test3.R
 
