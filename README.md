@@ -27,7 +27,7 @@ Removed inputs:
 - Percent of Housing Units that are 5 or More Units in Structure
 - Percent of Households that are 1 Person
 
-### 2. Property Sale Data
+### 2. The Warren Group
 Inputs:
 - Median Single Family Residential Sale Price, 2021
 - Percent Change in Median Single Family Residential Sale Price (2016-2021)
