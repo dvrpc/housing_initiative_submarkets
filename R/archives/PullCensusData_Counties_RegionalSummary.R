@@ -15,9 +15,7 @@ library(censusapi)
 library(RPostgreSQL)
 
 #Load environment variables
-readRenviron("~/.Renviron")
-
-census_api <- (Sys.getenv('CENSUS_API_KEY'))
+census_api <- Sys.getenv("CENSUS_API_KEY")
 
 #Region FIPS
 fips_region <- c("34005", "34007", "34015", "34021", "42017", "42029", "42045", "42091", "42101")

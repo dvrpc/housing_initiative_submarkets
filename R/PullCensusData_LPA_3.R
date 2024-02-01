@@ -1,5 +1,5 @@
 # Author: Brian Carney
-# Last updated: 09/27/2022
+# Last updated: 02/01/2024
 # Prepared for: Region Housing Initiative - Submarket Clustering Analysis
 
 # Set working directory
@@ -28,20 +28,12 @@ library(tidycensus)
 library(censusapi)
 
 #Load Census API key
-census_api_key("e6cd8f90ccb0acacdfa5373911a2e73b96dbd792", install=TRUE, overwrite=TRUE)
-readRenviron("~/.Renviron")
-
-# acs2019vars <-load_variables(year=2019, dataset="acs5", cache=FALSE)
-# dec2020vars <-load_variables(year=2020, dataset="pl", cache=FALSE)
+census_api <- Sys.getenv("CENSUS_API_KEY")
 
 #Region FIPS
 fips_region <- c("34005", "34007", "34015", "34021", "42017", "42029", "42045", "42091", "42101")
 
 #Variable List - For Reference
-acs5_varlist_2019 <- load_variables(year = 2019,
-                                    dataset = "acs5",
-                                    cache = TRUE)
-
 acs5_varlist_2020 <- load_variables(year = 2020,
                                     dataset = "acs5",
                                     cache = TRUE)
