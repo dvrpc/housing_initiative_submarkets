@@ -27,8 +27,8 @@ library(tidycensus)
 library(censusapi)
 
 #Load Census API key
-census_api_key("e6cd8f90ccb0acacdfa5373911a2e73b96dbd792", install=TRUE, overwrite=TRUE)
-readRenviron("~/.Renviron")
+census_api <- Sys.getenv("CENSUS_API_KEY")
+
 
 # acs2019vars <-load_variables(year=2019, dataset="acs5", cache=FALSE)
 # dec2020vars <-load_variables(year=2020, dataset="pl", cache=FALSE)

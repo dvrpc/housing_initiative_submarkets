@@ -28,8 +28,8 @@ library(tidycensus)
 library(censusapi)
 
 # Load Census API key
-census_api_key("e6cd8f90ccb0acacdfa5373911a2e73b96dbd792", install=TRUE, overwrite=TRUE)
-readRenviron("~/.Renviron")
+census_api <- Sys.getenv("CENSUS_API_KEY")
+
 
 # Region FIPS
 fips_region <- c("34005", "34007", "34015", "34021", "42017", "42029", "42045", "42091", "42101")
