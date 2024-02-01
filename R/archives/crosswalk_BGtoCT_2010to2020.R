@@ -10,8 +10,8 @@ library(censusapi)
 library(stringr)
 
 #Load Census API key
-census_api_key("e6cd8f90ccb0acacdfa5373911a2e73b96dbd792", install=TRUE, overwrite=TRUE)
-readRenviron("~/.Renviron")
+census_api <- Sys.getenv("CENSUS_API_KEY")
+
 
 # Import crosswalk
 crosswalk <- read.csv("R/nhgis_crosswak_bg2010_tr2020/nhgis_bg2010_tr2020.csv")
