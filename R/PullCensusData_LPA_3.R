@@ -18,7 +18,7 @@ setwd("C:\\Users\\bcarney\\Documents\\GitHub\\housing_initiative_submarkets\\R")
 #install.packages("rgdal")
 #install.packages("tidycensus")
 #update.packages("tidycensus")
-
+#install.packages("tigris")
 
 # Load packages
 library(tidyverse)
@@ -26,6 +26,7 @@ library(dplyr)
 library(rgdal)
 library(tidycensus)
 library(censusapi)
+library(tigris)
 
 #Load Census API key
 census_api <- Sys.getenv("CENSUS_API_KEY")
@@ -34,12 +35,12 @@ census_api <- Sys.getenv("CENSUS_API_KEY")
 fips_region <- c("34005", "34007", "34015", "34021", "42017", "42029", "42045", "42091", "42101")
 
 #Variable List - For Reference
-acs5_varlist_2020 <- load_variables(year = 2020,
+acs5_varlist_2024 <- load_variables(year = 2024,
                                     dataset = "acs5",
                                     cache = TRUE)
 
 # ---- Define Variables ----
-acs5_20_vars_tot <- c(
+acs5_24_vars_tot <- c(
   ### POPULATION AND UNITS ###
   # Total Population (Total Population)
   POP_TOT = "B01003_001",
@@ -183,25 +184,40 @@ dvrpc_states <- c(34, 42)
 dvrpc_fips <- c('34005|34007|34015|34021|42017|42029|42045|42091|42101')
 
 raw_data <- get_acs(geography = "tract",
-                    variables = acs5_20_vars_tot,
-                    year = 2020,
+                    variables = acs5_24_vars_tot,
+                    year = 2024,
                     state = dvrpc_states,
                     survey = "acs5",
                     output = "wide"
 ) %>%
-  mutate(year = 2020) %>%
-  filter(str_detect(GEOID, dvrpc_fips)) %>%
+  mutate(year = 2024) %>%
+  filter(substr(GEOID, 0, 5) %in% fips_region) %>%
   select(GEOID, year, ends_with("E"), -NAME)%>%
   `colnames<-`(str_replace(colnames(.),"E$",""))
 
-# Import Housing Unit Density File
-hu_density <- read.csv("U:\\FY2022\\Planning\\RegionalHousingInitiative\\SubmarketAnalysis\\data\\housing_unit_density.csv", colClasses = c("geoid"="character"))
+pa_tracts <- tracts(state = '42', cb = TRUE) %>%
+  mutate(fips = paste0(STATEFP, COUNTYFP))
 
+nj_tracts <- tracts(state = '34', cb = TRUE) %>%
+  mutate(fips = paste0(STATEFP, COUNTYFP))
+
+tracts <- pa_tracts %>%
+  union(nj_tracts) %>%
+  filter(str_detect(fips, dvrpc_fips)) %>%
+  st_drop_geometry() %>%
+  select(GEOID, ALAND)
+
+
+hu_density <- raw_data %>% 
+  left_join(tracts, by="GEOID") %>%
+  mutate(hu_acre = round(UNITS_TOT/ALAND/0.000247105, 2)) %>%
+  st_drop_geometry() %>%
+  select(GEOID, hu_acre)
 
 # Join with Raw Data
-raw_data_joined <- merge(raw_data, hu_density, by.x="GEOID", by.y="geoid")
+raw_data_joined <- merge(raw_data, hu_density, by="GEOID")
 
-dvrpc_dataset_20 <- raw_data_joined%>%
+dvrpc_dataset_24 <- raw_data_joined%>%
   mutate(TEN_RENT = round(100*(TEN_R/TEN_TOT),1))%>%
   mutate(TEN_OWN = round(100*(TEN_O/TEN_TOT),1))%>%
   mutate(HHI_U35 = round(100*((HHI_U10+HHI_1015 + HHI_1520 + HHI_2025 + HHI_2530 + HHI_3035)/HH_TOT),1))%>%
@@ -224,4 +240,4 @@ dvrpc_dataset_20 <- raw_data_joined%>%
 
 
 
-write.csv(dvrpc_dataset_20, "U:\\FY2022\\Planning\\RegionalHousingInitiative\\SubmarketAnalysis\\data\\acs5_2020_variables.csv", row.names = FALSE) 
+# write.csv(dvrpc_dataset_24, "U:\\FY2022\\Planning\\RegionalHousingInitiative\\SubmarketAnalysis\\data\\acs5_2024_variables.csv", row.names = FALSE) 
