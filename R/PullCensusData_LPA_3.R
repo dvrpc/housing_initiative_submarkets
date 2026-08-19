@@ -1,5 +1,5 @@
 # Author: Brian Carney
-# Last updated: 02/01/2024
+# Last updated: 08/17/2026
 # Prepared for: Region Housing Initiative - Submarket Clustering Analysis
 
 # Set working directory
@@ -19,6 +19,7 @@ setwd("C:\\Users\\bcarney\\Documents\\GitHub\\housing_initiative_submarkets\\R")
 #install.packages("tidycensus")
 #update.packages("tidycensus")
 #install.packages("tigris")
+#update.packages("tigris)
 
 # Load packages
 library(tidyverse)
