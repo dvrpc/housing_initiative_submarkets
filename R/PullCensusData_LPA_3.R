@@ -1,5 +1,5 @@
 # Author: Brian Carney
-# Last updated: 08/17/2026
+# Last updated: 09/17/2026
 # Prepared for: Region Housing Initiative - Submarket Clustering Analysis
 
 # Set working directory
@@ -15,19 +15,21 @@ setwd("C:\\Users\\bcarney\\Documents\\GitHub\\housing_initiative_submarkets\\R")
 #install.packages("censusapi")
 #install.packages("tidyverse")
 #install.packages("dplyr")
-#install.packages("rgdal")
+# install.packages("rgdal")
 #install.packages("tidycensus")
 #update.packages("tidycensus")
 #install.packages("tigris")
 #update.packages("tigris)
+#install.packages("sf")
 
 # Load packages
 library(tidyverse)
 library(dplyr)
-library(rgdal)
+#library(rgdal)
 library(tidycensus)
 library(censusapi)
 library(tigris)
+library(sf)
 
 #Load Census API key
 census_api <- Sys.getenv("CENSUS_API_KEY")
@@ -241,4 +243,4 @@ dvrpc_dataset_24 <- raw_data_joined%>%
 
 
 
-# write.csv(dvrpc_dataset_24, "U:\\FY2022\\Planning\\RegionalHousingInitiative\\SubmarketAnalysis\\data\\acs5_2024_variables.csv", row.names = FALSE) 
+write.csv(dvrpc_dataset_24, "U:\\FY2027\\Planning\\HousingSubmarkets\\project_input\\acs5_2024_variables.csv", row.names = FALSE) 
