@@ -151,5 +151,5 @@ dmypy.json
 
 #R Secrets
 secrets.R
-.Rhistory
-.RData
+R/.Rhistory
+R/.RData

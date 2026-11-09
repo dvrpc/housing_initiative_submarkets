@@ -9,7 +9,9 @@ select
     shape as geom
 from
     rhi.census_tracts_2020 ct
-full join twg.deeds_21_median med21 on
+left join twg.deeds_21_median med21 on
     med21.geoid = ct.geoid
-full join twg.deeds_25_median med25 on
-    med25.geoid = ct.geoid;
+left join twg.deeds_25_median med25 on
+    med25.geoid = ct.geoid
+where (ct.statefp in ('34') and ct.countyfp in ('005', '007', '015', '021')) or 
+(ct.statefp in ('42') and ct.countyfp in ('017', '029', '045', '091', '101'));
